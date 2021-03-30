@@ -195,13 +195,7 @@ export default {
 .sidebar > ul {
   height: 100%;
 }
-.logo-container {
-  height: 70px;
-}
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 250px;
-}
-.menu-icon {
-  margin-top: 20px;
 }
 </style>
