@@ -18,6 +18,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    component: Home,
+    redirect: '/menageBoard'
+  },
+  {
     path: '/login',
     name: 'Login',
     component: Login
@@ -131,7 +136,8 @@ const routes = [
             component: BaseTable,
             meta: {
               keepAlive: true,
-              requireAuth: true
+              requireAuth: true,
+              title: '基础列表'
             }
           },
           {
@@ -140,7 +146,8 @@ const routes = [
             component: BaseForm,
             meta: {
               keepAlive: true,
-              requireAuth: true
+              requireAuth: true,
+              title: '基础表单'
             }
           }
         ]

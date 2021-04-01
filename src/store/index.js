@@ -10,7 +10,8 @@ export default new Vuex.Store({
             username: window.localStorage.getItem('user' || '[]') == null ? '' : JSON.parse(window.localStorage.getItem('user' || '[]')).username
         },
         isCollapse: false,
-        userDrawer: false
+        userDrawer: false,
+        tabList: []
     },
     mutations: {
         login (state, user) {
@@ -22,11 +23,20 @@ export default new Vuex.Store({
         },
         changeUserDrawer (state) {
             state.userDrawer = !state.userDrawer
+        },
+        setTab(state, tabList) {
+            state.tabList = tabList
+        },
+        closeCurrentTabs() {
+
         }
     },
     getters: {
         userDrawer: (state) => {
             return state.userDrawer
+        },
+        tabList: (state) => {
+            return state.tabList
         }
     }
 })

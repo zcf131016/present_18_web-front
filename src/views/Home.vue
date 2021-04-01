@@ -5,6 +5,7 @@
       <y-sidebar></y-sidebar>
       <div :class="{'content-box':!this.$store.state.isCollapse, 'content-collapse' : this.$store.state.isCollapse}">
         <BreadCrumb></BreadCrumb>
+        <Tags></Tags>
         <div class="content">
           <transition>
             <keep-alive>
@@ -24,6 +25,7 @@ import ySidebar from "@/components/Sidebar";
 import yHeader from "@/components/Header";
 import BreadCrumb from "@/components/BreadCrumb";
 import UserInfo from "@/components/UserInfo";
+import Tags from "@/components/Tags";
 
 export default {
   name: 'Home',
@@ -31,7 +33,8 @@ export default {
     ySidebar,
     yHeader,
     BreadCrumb,
-    UserInfo
+    UserInfo,
+    Tags
   },
   data() {
     return {
@@ -70,6 +73,7 @@ export default {
     -webkit-transition: left .3s ease-in-out;
     transition: left .3s ease-in-out;
     background: #fafafa;
+    overflow: hidden;
   }
   .content-box {
     position: absolute;
@@ -81,6 +85,7 @@ export default {
     -webkit-transition: left .3s ease-in-out;
     transition: left .3s ease-in-out;
     background: #fafafa;
+    overflow: hidden;
   }
   .content {
     width: auto;

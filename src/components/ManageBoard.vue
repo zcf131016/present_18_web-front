@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <div class="group">到云项目组第18组</div>
       <el-row>
-        <el-col :span="4" v-for="(o, index) in group" :key="o" :offset="index > 0 ? 2 : 0">
+        <el-col :span="4" v-for="(o, index) in group" :key="index" :offset="index > 0 ? 2 : 0">
           <el-card :body-style="{ padding: '0px' }">
             <img :src="o.avata" class="image">
             <div style="padding: 14px;">
