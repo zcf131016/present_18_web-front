@@ -177,42 +177,43 @@
       onLoginByPhone: function () {
 
       },
-      onLogin: function () {
-        let _this = this;
-        if(this.loginForm.username !== null && this.loginForm.password !== null) {
-          _this.$router.replace('/home')
-          _this.$router.push('/ManageBoard')
-        }
-      },
-      // 这里使用定义的数据
-      // onLogin: function () { // 提交表单
+      // onLogin: function () {
       //   let _this = this;
-      //   this.loading = true;
-      //   postRequest('/login', { // 被封装了的axios方法
-      //     // 向服务器发送请求
-      //     username: this.loginForm.username,
-      //     password: this.loginForm.password
-      //   }).then(resp => {
-      //     _this.loading = false;
-      //     if (resp.status == 200) { // 200 表示成功 300 表示重定向
-      //       //成功
-      //       let json = resp.data;
-      //       if (json.status == 'success') { // 返回成功便跳转到home
-      //         _this.$store.commit('login', _this.loginForm) // 存储表单内容
-      //         _this.$router.replace({path: '/home'});     // 跳转到首页
-      //       } else {
-      //         _this.$alert('登录失败!', '💩失败!');
-      //       }
-      //     } else {
-      //       //失败
-      //       _this.$alert('登录失败!', '💩失败!');
-      //     }
-      //   }, resp => {
-      //     console.log(resp.status);
-      //     _this.loading = false;
-      //     _this.$alert('哎呀！找不到服务器⊙﹏⊙||!', '💩真尴尬!');
-      //   });
+      //   if(this.loginForm.username !== null && this.loginForm.password !== null) {
+      //     _this.$router.replace('/home')
+      //     _this.$router.push('/ManageBoard')
+      //   }
       // },
+      // 这里使用定义的数据
+      onLogin: function () { // 提交表单
+        let _this = this;
+        this.loading = true;
+        postRequest('/login', { // 被封装了的axios方法
+          // 向服务器发送请求
+          username: this.loginForm.username,
+          password: this.loginForm.password
+        }).then(resp => {
+          _this.loading = false;
+          if (resp.status == 200) { // 200 表示成功 300 表示重定向
+            //成功
+            let json = resp.data;
+            if (json.status == 'success') { // 返回成功便跳转到home
+              _this.$store.commit('login', _this.loginForm) // 存储表单内容
+              // 假的
+              _this.$router.replace({path: '/home'});     // 跳转到首页
+            } else {
+              _this.$alert('登录失败!', '💩失败!');
+            }
+          } else {
+            //失败
+            _this.$alert('登录失败!', '💩失败!');
+          }
+        }, resp => {
+          console.log(resp.status);
+          _this.loading = false;
+          _this.$alert('哎呀！找不到服务器⊙﹏⊙||!', '💩真尴尬!');
+        });
+      },
       getMsgCode() {
         let _this = this;
         this.loading = false;

@@ -1,5 +1,4 @@
 import axios from 'axios'
-import qs from 'qs'
 
 const service = axios.create({
     baseURL: 'http://localhost:8080',
@@ -10,6 +9,7 @@ const service = axios.create({
 service.interceptors.request.use(
     config => {
         config.withCredentials = true
+        localStorage.setItem('access_token','sdfdsfsdfasdfasdfasdfasefwrgergrgfaefawf')
         let token = localStorage.getItem('access_token')
         if (token) {
             config.headers = {
