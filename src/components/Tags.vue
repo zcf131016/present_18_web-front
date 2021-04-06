@@ -114,7 +114,6 @@ export default {
   position: relative;
   height: 40px;
   overflow: hidden;
-  background: #fff;
   padding-right: 120px;
 }
 

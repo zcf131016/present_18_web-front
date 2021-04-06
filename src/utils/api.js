@@ -1,9 +1,13 @@
-import axios from 'axios'
-
-let base = 'localhost:8888';  // 后端接口 
+import './http'
+import service from "@/utils/http";
+let base = 'localhost:8888';  // 后端接口
+// // 获取本地token, 默认请求头带token
+// let token = window.localStorage['token'];
+// axios.defaults.headers.common['token'] = token;
 // 封装axios
+// post 请求
 export const postRequest = (url, params) => {
-  return axios({
+  return service({
     method: 'post',
     url: `${base}${url}`,
     data: params,
@@ -20,8 +24,9 @@ export const postRequest = (url, params) => {
     }
   });
 }
+// 上传文件
 export const uploadFileRequest = (url, params) => {
-  return axios({
+  return service({
     method: 'post',
     url: `${base}${url}`,
     data: params,
@@ -31,7 +36,7 @@ export const uploadFileRequest = (url, params) => {
   });
 }
 export const putRequest = (url, params) => {
-  return axios({
+  return service({
     method: 'put',
     url: `${base}${url}`,
     data: params,
@@ -47,14 +52,17 @@ export const putRequest = (url, params) => {
     }
   });
 }
+// 删除请求
 export const deleteRequest = (url) => {
-  return axios({
+  return service({
     method: 'delete',
     url: `${base}${url}`
   });
 }
+
+// get 请求
 export const getRequest = (url,params) => {
-  return axios({
+  return service({
     method: 'get',
     data:params,
     transformRequest: [function (data) {

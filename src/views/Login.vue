@@ -25,14 +25,38 @@
               </el-row>
             </el-form-item>
             <el-checkbox class="login_remember" v-model="checked" label-position="left">记住密码</el-checkbox>
+            <el-link @click="onChangeMode('loginbyphone')">手机验证码登录</el-link>
             <el-form-item style="width: 100%">
-            <el-button type="info" @click.native.prevent="submitClick" style="width: 100%">登录</el-button>
+            <el-button type="info" @click.native.prevent="onLogin" style="width: 100%">登录</el-button>
             </el-form-item>
           <div style="padding-bottom: 20px">
             <el-link style="float: left" @click="onChangeMode('register')">注册账号</el-link>
             <el-link style="float: right;" @click="onChangeMode('forgot')">忘记密码</el-link>
           </div>
         </el-form>
+      <el-form v-else-if="this.mode==='loginbyphone'" :rules="rules" class="login-container" label-position="left"
+               label-width="0px" v-loading="loading">
+        <h1 class="login_title">手机验证码登录</h1>
+        <el-form-item prop="account">
+          <el-input type="text" v-model="loginByPhoneForm.phone" auto-complete="off" placeholder="手机号"></el-input>
+        </el-form-item>
+        <el-form-item  prop="smsCode">
+          <el-row :gutter="10">
+            <el-col :span="18">
+              <el-input type="string" v-model="registerForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
+            </el-col>
+            <el-col :span="6">
+              <el-button type="info" @click="getMsgCode()" :disabled="disabledCodeBtn">{{codeText}}</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="width: 100%">
+          <el-button type="info" @click.native.prevent="onLoginByPhone" style="width: 100%">登录</el-button>
+        </el-form-item>
+        <div>
+          <el-link @click="onChangeMode('login')">账号密码登录</el-link>
+        </div>
+      </el-form>
       <el-form v-else-if="this.mode==='register'" :rules="rules" class="login-container" label-position="left"
                label-width="0px" v-loading="loading">
         <h1 class="login_title">注册</h1>
@@ -116,7 +140,11 @@
         loginForm: {
           username: 'admin',
           password: '123456',
-          smsCOde: ''
+          smsCode: ''
+        },
+        loginByPhoneForm: {
+          phone: '',
+          smsCode: ''
         },
         registerForm: {
           phone: '',
@@ -146,35 +174,45 @@
       onModifyPassword: function () {
 
       },
-      // 这里使用定义的数据
-      submitClick: function () { // 提交表单
-        let _this = this;
-        this.loading = true;
-        postRequest('/login', { // 被封装了的axios方法
-          // 向服务器发送请求
-          username: this.loginForm.username,
-          password: this.loginForm.password
-        }).then(resp => {
-          _this.loading = false;
-          if (resp.status == 200) { // 200 表示成功 300 表示重定向
-            //成功
-            let json = resp.data;
-            if (json.status == 'success') { // 返回成功便跳转到home
-              _this.$store.commit('login', _this.loginForm)
-              _this.$router.replace({path: '/home'});
-            } else {
-              _this.$alert('登录失败!', '💩失败!');
-            }
-          } else {
-            //失败
-            _this.$alert('登录失败!', '💩失败!');
-          }
-        }, resp => {
-          console.log(resp.status);
-          _this.loading = false;
-          _this.$alert('哎呀！找不到服务器⊙﹏⊙||!', '💩真尴尬!');
-        });
+      onLoginByPhone: function () {
+
       },
+      onLogin: function () {
+        let _this = this;
+        if(this.loginForm.username !== null && this.loginForm.password !== null) {
+          _this.$router.replace('/home')
+          _this.$router.push('/ManageBoard')
+        }
+      },
+      // 这里使用定义的数据
+      // onLogin: function () { // 提交表单
+      //   let _this = this;
+      //   this.loading = true;
+      //   postRequest('/login', { // 被封装了的axios方法
+      //     // 向服务器发送请求
+      //     username: this.loginForm.username,
+      //     password: this.loginForm.password
+      //   }).then(resp => {
+      //     _this.loading = false;
+      //     if (resp.status == 200) { // 200 表示成功 300 表示重定向
+      //       //成功
+      //       let json = resp.data;
+      //       if (json.status == 'success') { // 返回成功便跳转到home
+      //         _this.$store.commit('login', _this.loginForm) // 存储表单内容
+      //         _this.$router.replace({path: '/home'});     // 跳转到首页
+      //       } else {
+      //         _this.$alert('登录失败!', '💩失败!');
+      //       }
+      //     } else {
+      //       //失败
+      //       _this.$alert('登录失败!', '💩失败!');
+      //     }
+      //   }, resp => {
+      //     console.log(resp.status);
+      //     _this.loading = false;
+      //     _this.$alert('哎呀！找不到服务器⊙﹏⊙||!', '💩真尴尬!');
+      //   });
+      // },
       getMsgCode() {
         let _this = this;
         this.loading = false;

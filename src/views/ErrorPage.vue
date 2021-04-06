@@ -13,15 +13,8 @@
 
 <script>
 export default {
-  name: '404',
-  data() {
-    return {
-      a: 4,
-      b: 0,
-      c: 4,
-      desc: '呀！迷路了！！！'
-    }
-  },
+  name: 'ErrorPage',
+  props: ['a','b','c','desc'],
   methods: {
     goBack(){
       this.$router.go(-1);

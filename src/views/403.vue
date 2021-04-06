@@ -13,13 +13,13 @@
 
 <script>
 export default {
-  name: '404',
+  name: '403',
   data() {
     return {
       a: 4,
       b: 0,
-      c: 4,
-      desc: '呀！迷路了！！！'
+      c: 3,
+      desc: '页面被禁止访问！！！'
     }
   },
   methods: {

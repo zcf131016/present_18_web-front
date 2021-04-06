@@ -6,7 +6,7 @@
         :collapse="isCollapse"
         background-color="#324158"
         text-color="#bfcbd9"
-        active-text-color="#20a0ff"
+        active-text-color="#5172D0"
         unique-opened
         router
     >
@@ -119,7 +119,7 @@ export default {
               title: '500异常页面'
             },
             {
-              index: 'customerror',
+              index: 'errorPage',
               title: '自定义异常页面'
             },
             {
@@ -128,11 +128,11 @@ export default {
               subs: [
                 {
                   index: '403',
-                  title: '三级菜单1'
+                  title: '403页面'
                 },
                 {
                   index: '404',
-                  title: '三级菜单2'
+                  title: '404页面'
                 }
               ]
             }

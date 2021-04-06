@@ -13,13 +13,13 @@
 
 <script>
 export default {
-  name: '404',
+  name: '500',
   data() {
     return {
-      a: 4,
+      a: 5,
       b: 0,
-      c: 4,
-      desc: '呀！迷路了！！！'
+      c: 0,
+      desc: '服务器错误！！！'
     }
   },
   methods: {
