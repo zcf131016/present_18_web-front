@@ -14,6 +14,8 @@ import BaseTable from "@/components/BaseTable";
 import Others from "@/components/Others";
 import BaseForm from "@/components/BaseForm";
 import ErrorPage from "@/views/ErrorPage";
+import MenuManage from "@/components/MenuManage";
+import SysParaManage from "@/components/SysParaManage";
 
 Vue.use(VueRouter)
 
@@ -57,6 +59,28 @@ const routes = [
           keepAlive: true,
           requireAuth: false,
           title: '角色管理'
+        }
+      },
+      {
+        path: '/sysParaManage',
+        name: '参数管理',
+        component: SysParaManage,
+        hidden: true,
+        meta: {
+          keepAlive: true,
+          requireAuth: false,
+          title: '参数管理'
+        }
+      },
+      {
+        path: '/menuManage',
+        name: '菜单管理',
+        component: MenuManage,
+        hidden: true,
+        meta: {
+          keepAlive: true,
+          requireAuth: false,
+          title: '菜单管理'
         }
       },
       {

@@ -5,7 +5,11 @@
       <el-button @click="toggleSelection()" type="warning">取消选择</el-button>
     </div>
     <div class="buttons">
-      <el-button @click="deleteSelected()" type="danger">批量删除</el-button>
+      <el-popconfirm
+          title="确定删除这些条目吗？"
+      >
+        <el-button slot="reference" @click="deleteSelected()" type="danger">批量删除</el-button>
+      </el-popconfirm>
     </div>
     <div class="buttons">
       <el-button @click="addItem" type="primary">添加</el-button>

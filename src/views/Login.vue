@@ -61,6 +61,9 @@
                label-width="0px" v-loading="loading">
         <h1 class="login_title">注册</h1>
         <el-form-item prop="account">
+          <el-input type="text" v-model="registerForm.username" auto-complete="off" placeholder="用户名"></el-input>
+        </el-form-item>
+        <el-form-item prop="account">
           <el-input type="text" v-model="registerForm.phone" auto-complete="off" placeholder="手机号"></el-input>
         </el-form-item>
         <el-form-item prop="checkPass">
@@ -76,6 +79,12 @@
               <el-button type="info" @click="getMsgCode()" :disabled="disabledCodeBtn">{{codeText}}</el-button>
             </el-col>
           </el-row>
+        </el-form-item>
+        <el-form-item>
+          <el-radio-group v-model="registerForm.roleId" size="small">
+            <el-radio-button :label="0"></el-radio-button>
+            <el-radio-button :label="1"></el-radio-button>
+          </el-radio-group>
         </el-form-item>
         <el-form-item style="width: 100%">
           <el-button type="info" @click.native.prevent="onRegister" style="width: 100%">注册</el-button>
@@ -147,9 +156,11 @@
           smsCode: ''
         },
         registerForm: {
+          username: '',
           phone: '',
           password: '',
-          smsCode: ''
+          smsCode: '',
+          roleId: 0
         },
         forgotForm: {
           phone: '',
@@ -169,7 +180,20 @@
         this.mode = mode
       },
       onRegister: function () {
-        return
+        let _this = this
+        this.loading = true
+        postRequest('/user/register', {
+          username: this.registerForm.username,
+          phone: this.registerForm.phone,
+          password: this.registerForm.password,
+          roleId: this.registerForm.roleId,
+          code: this.registerForm.smsCode
+        }).then(resp => {
+          _this.loading = false;
+          if(resp.status == 200) {
+
+          }
+        })
       },
       onModifyPassword: function () {
 

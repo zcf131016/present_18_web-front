@@ -70,6 +70,11 @@ export default {
           title: '角色管理'
         },
         {
+          icon: 'el-icon-menu',
+          index: 'menuManage',
+          title: '菜单管理'
+        },
+        {
           icon: 'el-icon-user',
           index: '2',
           title: '用户管理',
@@ -95,6 +100,11 @@ export default {
           icon: 'el-icon-s-data',
           index: 'dataDictionary',
           title: '数据字典'
+        },
+        {
+          icon: 'el-icon-s-data',
+          index: 'sysParaManage',
+          title: '参数管理'
         },
         {
           icon: 'el-icon-tickets',
