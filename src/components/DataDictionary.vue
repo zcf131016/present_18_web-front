@@ -162,6 +162,23 @@
         <el-button type="primary" @click="onSummitEdit">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="收货地址" :visible.sync="dialogEditFormVisible">
+      <el-form :model="EditForm">
+        <el-form-item label="类型名称" :label-width="formLabelWidth">
+          <el-input v-model="EditForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="类型编码" :label-width="formLabelWidth">
+          <el-input v-model="EditForm.code" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="类型描述" :label-width="formLabelWidth">
+          <el-input type="textarea" v-model="EditForm.desc" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogEditFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogEditFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -172,11 +189,17 @@ export default {
     return {
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogEditFormVisible: false,
       formLabelWidth: '120px',
       pageSize: 9,
       currentPage: 1,
       select: '类型名',
       currentType: '',
+      EditForm: {
+        name: '',
+        code: '',
+        desc: ''
+      },
       DetailForm: {
         name: '',
         code: '',
@@ -264,7 +287,9 @@ export default {
     addItem () {
 
     },
-    handleEdit(){},
+    handleEdit(index, row){
+      this.dialogEditFormVisible = true
+    },
     handleDelete(index, row){
 
     },

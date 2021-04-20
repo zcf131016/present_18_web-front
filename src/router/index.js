@@ -22,7 +22,11 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: Home
+    component: Home,
+    meta: {
+      keepAlive: true,
+      requireAuth: true
+    }
   },
   {
     path: '/login',
@@ -35,7 +39,7 @@ const routes = [
     name: '首页',
     meta: {
       keepAlive: true,
-      requireAuth: false,
+      requireAuth: true,
       title: '首页'
     },
     children: [
@@ -46,7 +50,7 @@ const routes = [
         hidden: true,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '管理面板'
         }
       },
@@ -57,7 +61,7 @@ const routes = [
         hidden: true,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '角色管理'
         }
       },
@@ -68,7 +72,7 @@ const routes = [
         hidden: true,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '参数管理'
         }
       },
@@ -79,7 +83,7 @@ const routes = [
         hidden: true,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '菜单管理'
         }
       },
@@ -89,7 +93,7 @@ const routes = [
         component: UserManage,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '用户管理'
         },
         children: [
@@ -99,7 +103,7 @@ const routes = [
             component: StudentManage,
             meta: {
               keepAlive: true,
-              requireAuth: false,
+              requireAuth: true,
               title: '学生管理'
             }
           },
@@ -109,7 +113,7 @@ const routes = [
             component: TeacherManage,
             meta: {
               keepAlive: true,
-              requireAuth: false,
+              requireAuth: true,
               title: '教师管理'
             }
           },
@@ -121,7 +125,7 @@ const routes = [
         component: LessonManage,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '课程管理'
         }
       },
@@ -131,7 +135,7 @@ const routes = [
         component: DataDictionary,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '数据字典'
         }
       },
@@ -141,7 +145,7 @@ const routes = [
         component: HelloWorld,
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '测试页面'
         }
       },
@@ -151,7 +155,7 @@ const routes = [
         component: Others,
         meta: {
           keepAlive: true,
-          requireAuth: false
+          requireAuth: true
         },
         children: [
           {
@@ -160,7 +164,7 @@ const routes = [
             component: BaseTable,
             meta: {
               keepAlive: true,
-              requireAuth: false,
+              requireAuth: true,
               title: '基础列表'
             }
           },
@@ -170,7 +174,7 @@ const routes = [
             component: BaseForm,
             meta: {
               keepAlive: true,
-              requireAuth: false,
+              requireAuth: true,
               title: '基础表单'
             }
           },
@@ -180,7 +184,7 @@ const routes = [
             component: ErrorPage,
             meta: {
               keepAlive: true,
-              requireAuth: false,
+              requireAuth: true,
               title: '自定义异常页面'
             }
           },
@@ -203,7 +207,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
         meta: {
           keepAlive: true,
-          requireAuth: false,
+          requireAuth: true,
           title: '关于我们'
         }
       }
