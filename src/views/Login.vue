@@ -121,16 +121,16 @@
           <el-input type="text" v-model="forgotForm.phone" auto-complete="off" placeholder="手机号"></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" v-model="forgotForm.password" auto-complete="off" placeholder="密码" show-password></el-input>
+          <el-input type="password" v-model="forgotForm.password" auto-complete="off" placeholder="密码" @change="checkPassword" show-password></el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" v-model="forgotForm.password1" auto-complete="off" placeholder="确认密码" show-password></el-input>
+          <el-input type="password" v-model="forgotForm.password1" auto-complete="off" placeholder="确认密码" @change="checkPassword" show-password></el-input>
         </el-form-item>
 
         <el-form-item  prop="smsCode">
           <el-row :gutter="10">
             <el-col :span="18">
-              <el-input type="string" v-model="registerForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
+              <el-input type="string" v-model="forgotForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="6">
               <el-button type="info" @click="getMsgCode(forgotForm.phone)" :disabled="disabledCodeBtn">{{codeText}}</el-button>
@@ -138,7 +138,7 @@
           </el-row>
         </el-form-item>
         <el-form-item style="width: 100%">
-          <el-button type="info" @click.native.prevent="onModifyPassword" style="width: 100%">提交更改</el-button>
+          <el-button type="info" @click.native.prevent="onModifyPassword" style="width: 100%" :disabled="!checkPass">提交更改</el-button>
         </el-form-item>
         <div>
           <el-link @click="onChangeMode('login')">前往登录</el-link>
@@ -215,10 +215,16 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
         identifyCode: '',
         disabledCodeBtn: false,
         codeText: '获取',
-        verify: false
+        verify: false,
+        checkPass: false
       }
     },
     methods: {
+      checkPassword: function () {
+        if(this.forgotForm.password != '' && this.forgotForm.password == this.forgotForm.password1) {
+          this.checkPass = true
+        }
+      },
       getUniversity: function () {
         let _this = this
           getRequest('/universities',{
@@ -283,11 +289,14 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
       },
       onModifyPassword: function () {
         let _this = this
-        putRequest('/users/password',{
-          newPwd: this.forgotForm.password1,
-          oldPwd: this.forgotForm.password,
+        postRequest('/users/password',{
+          newPassword: this.forgotForm.password,
+          code: this.forgotForm.smsCode,
+          phone: this.forgotForm.phone
         }).then(resp => {
-          
+          if (resp.data.status == 200) {
+            _this.$alert(resp.data.msg)
+          }
         })
 
       },
@@ -323,6 +332,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
             if (json.status == 200) { // 返回成功便跳转到home
               _this.$store.commit('login', _this.loginForm) // 存储表单内容
               _this.$router.replace({path: '/home'});     // 跳转到首页
+              _this.getCourses()
               localStorage.setItem('access_token', json.data.token)
             } else if (json.status == 500) {
               _this.$alert( '用户名或密码错误！','登录失败！');
@@ -388,6 +398,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
     mounted() {
       this.refreshCode()
       this.getUniversity()
+      this.checkPassword()
       this.getColleges(this.registerForm.schoolId)
     }
   }

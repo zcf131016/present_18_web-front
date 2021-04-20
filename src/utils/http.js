@@ -34,11 +34,11 @@ service.interceptors.request.use(
 //在 response 拦截器实现
 service.interceptors.response.use(
     response => {
-        // 定时刷新access-token
+        // 刷新access-token
         if( response.data.token ) {
             localStorage.setItem('access_token',response.data.token)
         }
-        switch (response.status) {
+        switch (response.data.status) {
             // 401 权限不足
             case 401:
                 router.replace({
@@ -63,13 +63,6 @@ service.interceptors.response.use(
             case 404:
                 router.replace({
                     path: '/404'
-                }).then(r => {})
-                break
-
-            // 500 服务器错误
-            case 500:
-                router.replace({
-                    path: '/500'
                 }).then(r => {})
                 break
 

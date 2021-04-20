@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import {getRequest} from "@/utils/api";
+
 export default {
   name: "BaseTable",
   data() {
