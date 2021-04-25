@@ -6,15 +6,14 @@
     <div class="header-right">
       <div class="user-notice">
           <i class="el-icon-bell"></i>
+        <el-badge :value="message" class="item" type="warning" />
       </div>
       <div class="user-name">
         {{currentUserName}}
       </div>
       <div class="user-avatar">
         <el-dropdown @command="handleCommand">
-          <el-badge :value="message" class="item" type="warning">
           <el-avatar :size="50" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-          </el-badge>
                 <el-dropdown-menu class="el-dropdown-link" slot="dropdown">
                   <el-dropdown-item command="MyHome">个人主页</el-dropdown-item>
                   <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
@@ -46,13 +45,13 @@ export default {
           type: 'warning'
         }).then(function () {
           _this.currentUserName = '游客';
+          localStorage.removeItem('access_token')
           _this.$router.replace({path: '/login'});
         }, function () {
           //取消
         })
       }
       if (command === 'MyHome') {
-        //getRequest("/userhome");
         _this.$store.commit('changeUserDrawer')
         console.log('drawer', _this.$store.state.userDrawer)
       }
@@ -84,11 +83,12 @@ export default {
 .user-notice {
   margin-right: 20px;
   line-height: 70px;
-  font-size: 20px;
+  font-size: 25px;
 }
 .user-name {
   margin-right: 20px;
   line-height: 70px;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
 }
 .user-avatar {
   padding-top: 10px;
@@ -100,7 +100,9 @@ export default {
   margin-top: 10px;
 }
 .item {
-  position: relative;
-  float: left;
+  float: right;
+  right: 18px;
+  margin-top: -5px;
+  margin-left: 10px;
 }
 </style>

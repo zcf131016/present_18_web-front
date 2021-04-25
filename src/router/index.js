@@ -21,20 +21,12 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    component: Home,
-    meta: {
-      keepAlive: true,
-      requireAuth: true
-    }
-  },
-  {
     path: '/login',
     name: 'Login',
     component: Login
   },
   {
-    path: '/home',
+    path: '/',
     component: Home,
     name: '首页',
     meta: {
@@ -42,6 +34,7 @@ const routes = [
       requireAuth: true,
       title: '首页'
     },
+    redirect: '/manageBoard',
     children: [
       {
         path: '/manageBoard',
@@ -190,7 +183,7 @@ const routes = [
           },
           {
             path: '/404',
-            name: '404',
+            name: '404页面',
             component: () => import('../views/404'),
             meta: {
               title: '404异常页面'

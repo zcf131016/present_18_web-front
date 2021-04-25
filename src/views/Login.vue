@@ -1,12 +1,12 @@
 <template>
   <body id="paper">
     <div>
-        <!--  账号密码登录-->
-        <el-form v-if="this.mode==='login'" ref="form" :model="loginForm" :rules="rules" class="login-container" label-position="left"
+        <!--  手机号+密码登录-->
+        <el-form v-if="this.mode==='login'" :model="loginForm" ref="loginForm" :rules="rules" class="login-container" label-position="left"
                 label-width="0px" v-loading="loading">
-            <h1 class="login_title">到云后台系统登录</h1>
-            <el-form-item prop="username">
-            <el-input type="string" v-model="loginForm.username" auto-complete="off" placeholder="用户名"></el-input>
+            <h1 class="login_title">登录</h1>
+            <el-form-item prop="phone">
+            <el-input type="string" v-model="loginForm.phone" auto-complete="off" placeholder="手机号"></el-input>
             </el-form-item>
             <el-form-item prop="password">
             <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码" show-password></el-input>
@@ -14,40 +14,40 @@
             <el-form-item  prop="smsCode">
               <el-row :gutter="10">
                 <el-col :span="16">
-                  <el-input type="string" v-model="loginForm.smsCode" autocomplete="off" placeholder="验证码" @change="verifyCode"></el-input>
+                  <el-input type="string" v-model="loginForm.smsCode" autocomplete="off" placeholder="验证码" @input="verifyCode"></el-input>
                 </el-col>
                 <el-col :span="8">
                   <div class="login-code" @click="refreshCode">
-                    <!--验证码组件-->
+                    <!--图片验证码组件-->
                     <SIdentify :identifyCode="identifyCode"></SIdentify>
                   </div>
                 </el-col>
               </el-row>
             </el-form-item>
             <el-checkbox class="login_remember" v-model="checked" label-position="left">记住密码</el-checkbox>
-            <el-link @click="onChangeMode('loginbyphone')" style="float: right">手机验证码登录</el-link>
             <el-form-item style="width: 100%">
             <el-button type="info" @click.native.prevent="onLogin" style="width: 100%" :disabled="!verify">登录</el-button>
             </el-form-item>
           <div style="padding-bottom: 20px">
             <el-link style="float: left" @click="onChangeMode('register')">注册账号</el-link>
+            <el-link @click="onChangeMode('loginbyphone')">验证码登录</el-link>
             <el-link style="float: right;" @click="onChangeMode('forgot')">忘记密码</el-link>
           </div>
         </el-form>
 <!--      手机验证码登录-->
       <el-form v-else-if="this.mode==='loginbyphone'" :rules="rules" class="login-container" label-position="left"
-               label-width="0px" v-loading="loading" :model="loginByPhoneForm">
+               label-width="0px" v-loading="loading" :model="loginByPhoneForm" ref="loginByPhoneFrom">
         <h1 class="login_title">手机验证码登录</h1>
         <el-form-item prop="phone">
           <el-input type="text" v-model="loginByPhoneForm.phone" auto-complete="off" placeholder="手机号"></el-input>
         </el-form-item>
         <el-form-item  prop="smsCode">
           <el-row :gutter="10">
-            <el-col :span="15">
+            <el-col :span="16">
               <el-input type="string" v-model="loginByPhoneForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
             </el-col>
-            <el-col :span="6">
-              <el-button type="info" @click="getMsgCode(loginByPhoneForm.phone)" :disabled="disabledCodeBtn">{{codeText}}</el-button>
+            <el-col :span="8">
+              <el-button type="info" @click="getMsgCode(loginByPhoneForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -60,7 +60,7 @@
       </el-form>
 <!--      注册-->
       <el-form v-else-if="this.mode==='register'" :rules="rules" class="login-container" label-position="left"
-               label-width="0px" v-loading="loading" :model="registerForm">
+               label-width="0px" v-loading="loading" :model="registerForm" ref="registerForm">
         <h1 class="login_title">注册</h1>
         <el-form-item prop="username">
           <el-input type="string" v-model="registerForm.username" auto-complete="off" placeholder="用户名"></el-input>
@@ -76,11 +76,11 @@
         </el-form-item>
         <el-form-item  prop="smsCode">
           <el-row :gutter="10">
-            <el-col :span="15">
+            <el-col :span="16">
               <el-input type="string" v-model="registerForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
             </el-col>
-            <el-col :span="6">
-              <el-button type="info" @click="getMsgCode(registerForm.phone)" :disabled="disabledCodeBtn">{{codeText}}</el-button>
+            <el-col :span="8">
+              <el-button type="info" @click="getMsgCode(registerForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -115,7 +115,7 @@
       </el-form>
 <!--      忘记密码-->
       <el-form v-else :rules="rules" class="login-container" label-position="left"
-               label-width="0px" v-loading="loading" :model="forgotForm">
+               label-width="0px" v-loading="loading" :model="forgotForm" ref="forgotForm">
         <h1 class="login_title">修改密码</h1>
         <el-form-item prop="phone">
           <el-input type="text" v-model="forgotForm.phone" auto-complete="off" placeholder="手机号"></el-input>
@@ -129,11 +129,11 @@
 
         <el-form-item  prop="smsCode">
           <el-row :gutter="10">
-            <el-col :span="18">
+            <el-col :span="16">
               <el-input type="string" v-model="forgotForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
             </el-col>
-            <el-col :span="6">
-              <el-button type="info" @click="getMsgCode(forgotForm.phone)" :disabled="disabledCodeBtn">{{codeText}}</el-button>
+            <el-col :span="8">
+              <el-button type="info" @click="getMsgCode(forgotForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -161,30 +161,30 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
         if (!value) {
           return callback(new Error('手机号不能为空'));
         } else {
-          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
           console.log(reg.test(value));
-          if (reg.test(value)) {
+          let ok = reg.test(value)
+          if (ok) {
             callback();
           } else {
-            return callback(new Error('请输入正确的手机号'));
+            return callback(new Error('请输入正确的手机号'))
           }
         }
       };
       return {
         // 这里定义数据
         rules: {
-          phone: [{validator: checkPhone, trigger: 'blur'}],
-          username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-          password: [{required: true, message: '请输入密码', trigger: 'blur'}],
-          number: [{required: true, message: '请输入学号', trigger: 'blur'}],
-          smsCode: [{ required: true, message: '验证码不能为空'},
-                    {pattern: '/[a-zA-Z0-9}$/',message: '验证码只能为数字或字母',trigger: 'blur' }]
+          phone: [{validator: checkPhone}],
+          username: [{required: true, message: '请输入用户名'},{min: 6, max: 12, message: '长度在6-12个字符'}],
+          password: [{required: true, message: '请输入密码'},{min: 8, max: 16, message: '长度在8-16个字符'}],
+          number: [{required: true, message: '请输入学号'}],
+          smsCode: [{ required: true, message: '验证码不能为空'},{min: 4,max: 4, message: '长度4个字符'}]
         },
         checked: false,
         msgValidate: false,
         mode: 'login',
         loginForm: {
-          username: '',
+          phone: '',
           password: '',
           smsCode: ''
         },
@@ -213,7 +213,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
         loading: false,
         identifyCodes: '1234567890',
         identifyCode: '',
-        disabledCodeBtn: false,
+        disabledCodeBtn: true,
         codeText: '获取',
         verify: false,
         checkPass: false
@@ -262,6 +262,17 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
       onRegister: function () {
         let _this = this
         this.loading = true
+        let flag = getRequest('/users/phone/' + this.registerForm.phone,{}).then(resp => {
+          if (resp.data.status == 1) {
+            return true
+          } else {
+            return false
+          }
+        })
+        if(flag) {
+          this.$alert('尴尬','手机号已被注册！')
+          return
+        }
         postRequest('/users', {
           "code": this.registerForm.smsCode,
           "password": this.registerForm.password,
@@ -276,13 +287,13 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           _this.loading = false;
           switch (resp.data.status) {
             case 200:
-              _this.$alert(resp.data.msg)
+              _this.$message(resp.data.msg)
               break
             case 500:
-              _this.$alert(resp.data.msg)
+              _this.$message(resp.data.msg)
               break
             case 400:
-              _this.$alert(resp.data.msg)
+              _this.$message(resp.data.msg)
               break
           }
         })
@@ -295,7 +306,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           phone: this.forgotForm.phone
         }).then(resp => {
           if (resp.data.status == 200) {
-            _this.$alert(resp.data.msg)
+            _this.$message(resp.data.msg)
           }
         })
 
@@ -307,11 +318,12 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           code: this.loginByPhoneForm.smsCode
         }).then(resp => {
           if (resp.data.status == 200) {
-            _this.$alert(resp.data.msg)
+            _this.$message(resp.data.msg)
             _this.$store.commit('login', _this.loginForm) // 存储表单内容
             localStorage.setItem('access_token', resp.data.token)
-            _this.$router.replace({path: '/home'});     // 跳转到首页
-
+            _this.$router.replace({path: '/'});     // 跳转到首页
+          } else {
+            _this.$message(resp.data.msg)
           }
         })
       },
@@ -321,7 +333,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
         this.loading = true;
         postRequest('/login/password', { // 被封装了的axios方法
           // 向服务器发送请求
-          username: this.loginForm.username,
+          phone: this.loginForm.phone,
           password: this.loginForm.password
         }).then(resp => {
           _this.loading = false;
@@ -331,30 +343,35 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
             console.log(json)
             if (json.status == 200) { // 返回成功便跳转到home
               _this.$store.commit('login', _this.loginForm) // 存储表单内容
-              _this.$router.replace({path: '/home'});     // 跳转到首页
-              _this.getCourses()
               localStorage.setItem('access_token', json.data.token)
-            } else if (json.status == 500) {
-              _this.$alert( '用户名或密码错误！','登录失败！');
+              this.$message(resp.data.msg)
+              _this.$router.replace({path: '/'});     // 跳转到首页
+            } else {
+              _this.$message(resp.data.msg)
             }
           } else {
-            //失败
-            _this.$alert('登录失败!', '💩失败!');
+            _this.$message(resp.data.msg)
           }
-        }, resp => {
-          console.log(resp.status);
-          _this.loading = false;
-          _this.$alert('哎呀！找不到服务器⊙﹏⊙||!', '💩真尴尬!');
         });
       },
       getMsgCode(phone) {
         let _this = this;
         this.loading = false;
+        if(phone == ''){
+          this.$message('请输入手机号！')
+          return
+        }
         getRequest('/sms/' + phone,{
         }).then(resp => {
           if(resp.status == 200) {
-            _this.$alert('验证码发送成功');
-            _this.countDown(60)
+            if (resp.data.status == 200){
+              _this.$message(resp.data.msg);
+              console.log('发送成功')
+              _this.countDown(60)
+            } else {
+              _this.$message(resp.data.msg)
+              console.log('发送失败')
+            }
           }
         })
       },
@@ -381,19 +398,32 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
         }
       },
       countDown (time) {
-        if (time === 0) {
+        if (time == 0) {
           this.disabledCodeBtn = true
           this.codeText = "获取"
           return
         } else {
-          this.disabledCodeBtn = false;
+          this.disabledCodeBtn = false
           this.codeText = '重新发送(' + time + ')'
           time--
         }
         setTimeout(()=> {
           this.countDown(time)
         }, 1000)
-      }
+      },
+      // getAuthToken() {
+      //   let token = this.getUrlKey('token')
+      //   let id = this.getUrlKey('id')
+      //   if(token) {
+      //     console.log('hello')
+      //     localStorage.setItem('access_token', token)
+      //     localStorage.setItem('user_id', id)
+      //     this.$router.push('/')
+      //   }
+      // },
+      // getUrlKey: function (name) {
+      //   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [""])[1].replace(/\+/g, '%20')) || null
+      // }
     },
     mounted() {
       this.refreshCode()
@@ -405,7 +435,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
 </script>
 <style>
 #paper {
-  background:url("../assets/backimg3.jpg") no-repeat;
+  background:url("../assets/backimgwebp.webp") no-repeat;
   background-position: center;
   height: 100%;
   width: 100%;
@@ -435,5 +465,6 @@ body {
   .login_remember {
     margin: 0px 0px 35px 0px;
     text-align: left;
+    float: left;
   }
 </style>

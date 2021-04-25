@@ -36,11 +36,10 @@
         </div>
         <el-table ref="multipleTable" highlight-current-row style="width: 100%;" :data="TableData.slice((currentPage-1)*pageSize,currentPage*pageSize)" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" />
+          <el-table-column prop="id" label="ID" />
           <el-table-column prop="name" label="名称" />
-          <el-table-column prop="dataScope" label="数据权限" />
-          <el-table-column prop="level" label="角色级别" />
-          <el-table-column :show-overflow-tooltip="true" prop="description" label="描述" />
-          <el-table-column :show-overflow-tooltip="true" width="135px" prop="createTime" label="创建日期" />
+          <el-table-column :show-overflow-tooltip="true" prop="remark" label="描述" />
+          <el-table-column :show-overflow-tooltip="true" width="135px" prop="create_time" label="创建日期" />
           <el-table-column label="操作" width="200px" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button
@@ -144,6 +143,8 @@
 </template>
 
 <script>
+import {getRequest} from "@/utils/api";
+
 export default {
   name: "RoleManage",
   data() {
@@ -174,22 +175,7 @@ export default {
         level: '',
         description: '-'
       },
-      TableData: [
-        {
-          name: '超级管理员',
-          dataScope: '所有',
-          level: '1',
-          description: '-',
-          createTime: '2021-03-03'
-        },
-        {
-          name: '教师',
-          dataScope: '自定义',
-          level: '2',
-          description: '-',
-          createTime: '2021-03-03'
-        }
-      ],
+      TableData: [],
       menus: [
         {
           id: 1,
@@ -267,11 +253,22 @@ export default {
         this.$refs.multipleTable.clearSelection();
       }
     },
+    getAllRole: function () {
+      let _this = this
+      getRequest('/roles',{
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }).then(resp => {
+        if (resp.data.status == 200) {
+          _this.TableData = resp.data.data
+        } else {
+          _this.$alert(resp.data.msg)
+        }
+      })
+    },
     deleteSelected() {
-
     },
     addItem () {
-
     },
     menuChange() {},
     saveMenu() {},
@@ -290,6 +287,9 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     }
+  },
+  mounted() {
+    this.getAllRole()
   }
 }
 </script>

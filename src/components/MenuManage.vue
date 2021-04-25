@@ -4,7 +4,9 @@
 
 <script>
 export default {
-  name: "MenuManage"
+  name: "MenuManage",
+  components: {}
+
 }
 </script>
 

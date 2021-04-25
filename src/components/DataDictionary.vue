@@ -32,8 +32,8 @@
           width="55">
       </el-table-column>
       <el-table-column
-          prop="name"
-          label="类型名称"
+          prop="id"
+          label="ID"
           show-overflow-tooltip>
       </el-table-column>
       <el-table-column
@@ -42,7 +42,12 @@
           show-overflow-tooltip>
       </el-table-column>
       <el-table-column
-          prop="desc"
+          prop="name"
+          label="类型名称"
+          show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column
+          prop="remark"
           label="类型描述"
           show-overflow-tooltip>
       </el-table-column>
@@ -86,8 +91,8 @@
               width="55">
           </el-table-column>
           <el-table-column
-              prop="name"
-              label="类型名称"
+              prop="id"
+              label="ID"
               show-overflow-tooltip>
           </el-table-column>
           <el-table-column
@@ -96,28 +101,33 @@
               show-overflow-tooltip>
           </el-table-column>
           <el-table-column
-              prop="desc"
+              prop="name"
+              label="类型名称"
+              show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+              prop="value"
+              label="值"
+              show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+              prop="remark"
               label="类型描述"
               show-overflow-tooltip>
           </el-table-column>
           <el-table-column
-              prop="creatTime"
+              prop="enable"
+              label="是否启用"
+              show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+              prop="sort"
+              label="排序"
+              show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+              prop="create_time"
               label="创建时间"
-              show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column
-              prop="creator"
-              label="创建者"
-              show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column
-              prop="modifyTime"
-              label="修改时间"
-              show-overflow-tooltip>
-          </el-table-column>
-          <el-table-column
-              prop="modifier"
-              label="修改者"
               show-overflow-tooltip>
           </el-table-column>
           <el-table-column label="操作" width="200px">
@@ -183,6 +193,8 @@
 </template>
 
 <script>
+import {getRequest, postRequest} from "@/utils/api";
+
 export default {
   name: "DataDictionary",
   data() {
@@ -205,73 +217,26 @@ export default {
         code: '',
         desc: ''
       },
-      tableData: [{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述'
-      }],
-      tableDataDetail: [{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述',
-        createTime: '2021-03-03',
-        creator: '谁谁谁',
-        modifyTime: '2021-03-03',
-        modifier: '谁谁谁'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述',
-        createTime: '2021-03-03',
-        creator: '谁谁谁',
-        modifyTime: '2021-03-03',
-        modifier: '谁谁谁'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述',
-        createTime: '2021-03-03',
-        creator: '谁谁谁',
-        modifyTime: '2021-03-03',
-        modifier: '谁谁谁'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述',
-        createTime: '2021-03-03',
-        creator: '谁谁谁',
-        modifyTime: '2021-03-03',
-        modifier: '谁谁谁'
-      },{
-        name: '类型名',
-        code: '1234',
-        desc: '类型描述',
-        createTime: '2021-03-03',
-        creator: '谁谁谁',
-        modifyTime: '2021-03-03',
-        modifier: '谁谁谁'
-      },],
+      tableData: [],
+      tableDataDetail: [],
       multipleSelection: [],
       search: ''
     }
   },
   methods: {
+    getDictionary: function () {
+      let _this = this
+      getRequest('/dict',{
+        pageNum: this.currentPage,
+        pageSize: this.pageSize
+      }).then(resp => {
+        if (resp.data.status == 200) {
+          this.tableData = resp.data.data
+        } else {
+          _this.$alert(resp.data.msg)
+        }
+      })
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -294,8 +259,18 @@ export default {
 
     },
     handleDetail(index, row){
+      let _this = this
       this.dialogTableVisible = true
       this.currentType = row.name
+      getRequest('/dict/' + row.code + '/detail', {
+
+      }).then(resp => {
+        if (resp.data.status == 200) {
+          this.tableDataDetail = resp.data.data
+        } else {
+          _this.$alert(resp.data.msg)
+        }
+      })
     },
     handleDetailEdit(index, row) {
       this.dialogFormVisible = true
@@ -318,6 +293,9 @@ export default {
     onSummitEdit() {
 
     }
+  },
+  mounted() {
+    this.getDictionary()
   }
 }
 </script>

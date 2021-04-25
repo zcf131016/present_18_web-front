@@ -1,7 +1,7 @@
 <template>
   <div class="error-page">
-    <div class="error-code">{{a}}<span>{{b}}</span>{{c}}</div>
-    <div class="error-desc">{{desc}}</div>
+    <div class="error-code">4<span>0</span>4</div>
+    <div class="error-desc">呀！迷路了！！！</div>
     <div class="error-handle">
       <router-link to="/home">
         <el-button type="primary" size="large">返回首页</el-button>
@@ -16,10 +16,6 @@ export default {
   name: '404',
   data() {
     return {
-      a: 4,
-      b: 0,
-      c: 4,
-      desc: '呀！迷路了！！！'
     }
   },
   methods: {

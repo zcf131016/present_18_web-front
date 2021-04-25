@@ -22,7 +22,8 @@
 
 <script>
 export default {
-  name: "Tags",
+  name: "Tag",
+  components: {},
   data() {
     return {
       tagsList: []
@@ -66,7 +67,7 @@ export default {
         this.tagsList.push({
           title: route.meta.title,
           path: route.fullPath,
-          name: route.matched[1].components.default.name
+          name: route.matched[0].components.default.name
         })
       }
       this.$store.commit('setTab', this.tagsList);

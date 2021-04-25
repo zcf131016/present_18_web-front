@@ -1,7 +1,7 @@
 <template>
   <div class="error-page">
-    <div class="error-code">{{a}}<span>{{b}}</span>{{c}}</div>
-    <div class="error-desc">{{desc}}</div>
+    <div class="error-code">4<span>0</span>3</div>
+    <div class="error-desc">页面被禁止访问！！！</div>
     <div class="error-handle">
       <router-link to="/home">
         <el-button type="primary" size="large">返回首页</el-button>
@@ -16,10 +16,6 @@ export default {
   name: '403',
   data() {
     return {
-      a: 4,
-      b: 0,
-      c: 3,
-      desc: '页面被禁止访问！！！'
     }
   },
   methods: {

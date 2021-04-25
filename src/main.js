@@ -15,7 +15,6 @@ router.beforeEach((to, from, next) => {
         if (token) {// 从全局共享变量中找到登录信息
           next()
         } else {
-            alert('逮~，没有权限不让进去！！！')
           next({
             path: 'login',
             query: {redirect: to.fullPath}
