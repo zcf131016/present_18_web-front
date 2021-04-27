@@ -9,11 +9,11 @@
         <el-badge :value="message" class="item" type="warning" />
       </div>
       <div class="user-name">
-        {{currentUserName}}
+        {{userInfo.username}}
       </div>
       <div class="user-avatar">
         <el-dropdown @command="handleCommand">
-          <el-avatar :size="50" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+          <el-avatar :size="50" :src="userInfo.avatar"></el-avatar>
                 <el-dropdown-menu class="el-dropdown-link" slot="dropdown">
                   <el-dropdown-item command="MyHome">个人主页</el-dropdown-item>
                   <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
@@ -25,17 +25,37 @@
 </template>
 
 <script>
+import {getRequest} from "@/utils/api";
+
 export default {
   name: "Header",
   data () {
     return {
       collapse: this.$store.state.isCollapse,
-      currentUserName: 'Admin',
+      userInfo: {
+        username: '',
+        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+      },
       notices: [],
       message: 2
     }
   },
   methods: {
+    getUserInfo () {
+      let _this = this
+      let user_id = localStorage.getItem('user_id')
+      getRequest('/users/' + user_id, {}).then(resp => {
+        let user_info = resp.data.data
+        if(resp.data.status == 200) {
+          console.log(user_info)
+          _this.userInfo.username = user_info.username
+          if(user_info.avatar){
+            _this.userInfo.avatar = user_info.avatar
+          }
+          localStorage.setItem('user_info', JSON.stringify(user_info))
+        }
+      })
+    },
     handleCommand(command) {
       let _this = this;
       if (command === 'logout') {
@@ -56,6 +76,9 @@ export default {
         console.log('drawer', _this.$store.state.userDrawer)
       }
     }
+  },
+  mounted() {
+    this.getUserInfo()
   }
 }
 </script>

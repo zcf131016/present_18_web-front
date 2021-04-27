@@ -320,6 +320,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           if (resp.data.status == 200) {
             _this.$message(resp.data.msg)
             _this.$store.commit('login', _this.loginForm) // 存储表单内容
+            localStorage.setItem('user_id', resp.data.id)
             localStorage.setItem('access_token', resp.data.token)
             _this.$router.replace({path: '/'});     // 跳转到首页
           } else {
@@ -344,6 +345,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
             if (json.status == 200) { // 返回成功便跳转到home
               _this.$store.commit('login', _this.loginForm) // 存储表单内容
               localStorage.setItem('access_token', json.data.token)
+              localStorage.setItem('user_id', json.data.id)
               this.$message(resp.data.msg)
               _this.$router.replace({path: '/'});     // 跳转到首页
             } else {
