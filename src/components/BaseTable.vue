@@ -5,7 +5,11 @@
       <el-button @click="toggleSelection()" type="warning">取消选择</el-button>
     </div>
     <div class="buttons">
-      <el-button @click="deleteSelected()" type="danger">批量删除</el-button>
+      <el-popconfirm
+          title="确定删除这些条目吗？"
+      >
+        <el-button slot="reference" @click="deleteSelected()" type="danger">批量删除</el-button>
+      </el-popconfirm>
     </div>
     <div class="buttons">
       <el-button @click="addItem" type="primary">添加</el-button>
@@ -84,11 +88,13 @@
 </template>
 
 <script>
+import {getRequest} from "@/utils/api";
+
 export default {
   name: "BaseTable",
   data() {
     return {
-      pageSize: 9,
+      pageSize: 10,
       currentPage: 1,
       select: '学号',
       tableData: [{
@@ -199,7 +205,7 @@ export default {
   padding: 10px;
   padding-bottom: 10px;
   height: 100%;
-  top: 10px;
+  /*top: 10px;*/
 }
 .block {
   float: right;

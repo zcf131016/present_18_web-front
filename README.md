@@ -28,5 +28,4 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## View
-![首页](https://github.com/zcf131016/present_18_web-front/blob/main/viewImg/home.png)
-![](https://github.com/zcf131016/present_18_web-front/blob/main/viewImg/stu.png)
+![首页](https://github.com/zcf131016/present_18_web-front/blob/dev/viewImg/home.png)

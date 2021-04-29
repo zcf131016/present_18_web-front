@@ -1,7 +1,7 @@
 <template>
   <div class="error-page">
-    <div class="error-code">{{a}}<span>{{b}}</span>{{c}}</div>
-    <div class="error-desc">{{desc}}</div>
+    <div class="error-code">5<span>0</span>0</div>
+    <div class="error-desc">服务器错误！！！</div>
     <div class="error-handle">
       <router-link to="/home">
         <el-button type="primary" size="large">返回首页</el-button>
@@ -16,10 +16,6 @@ export default {
   name: '500',
   data() {
     return {
-      a: 5,
-      b: 0,
-      c: 0,
-      desc: '服务器错误！！！'
     }
   },
   methods: {

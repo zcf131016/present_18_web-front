@@ -11,12 +11,12 @@ Vue.config.productionTip = false
 // 在进入每一个页面前执行判断权限
 router.beforeEach((to, from, next) => {
       if (to.meta.requireAuth) { // 如果该页面需要权限
-        if (store.state.user.username) {// 从全局共享变量中找到登录信息
+        let token = localStorage.getItem('access_token')
+        if (token) {// 从全局共享变量中找到登录信息
           next()
         } else {
-            alert('逮~，没有权限不让进去！！！')
           next({
-            path: 'login',
+            path: 'login', // 没有登录信息，跳到登录页面
             query: {redirect: to.fullPath}
           })
         }
@@ -33,3 +33,5 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+export default router

@@ -6,15 +6,14 @@
     <div class="header-right">
       <div class="user-notice">
           <i class="el-icon-bell"></i>
+        <el-badge :value="message" class="item" type="warning" />
       </div>
       <div class="user-name">
-        {{currentUserName}}
+        {{userInfo.username}}
       </div>
       <div class="user-avatar">
         <el-dropdown @command="handleCommand">
-          <el-badge :value="message" class="item" type="warning">
-          <el-avatar :size="50" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-          </el-badge>
+          <el-avatar :size="50" :src="userInfo.avatar"></el-avatar>
                 <el-dropdown-menu class="el-dropdown-link" slot="dropdown">
                   <el-dropdown-item command="MyHome">个人主页</el-dropdown-item>
                   <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
@@ -26,17 +25,37 @@
 </template>
 
 <script>
+import {getRequest} from "@/utils/api";
+
 export default {
   name: "Header",
   data () {
     return {
       collapse: this.$store.state.isCollapse,
-      currentUserName: 'Admin',
+      userInfo: {
+        username: '',
+        avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+      },
       notices: [],
       message: 2
     }
   },
   methods: {
+    getUserInfo () {
+      let _this = this
+      let user_id = localStorage.getItem('user_id')
+      getRequest('/users/' + user_id, {}).then(resp => {
+        let user_info = resp.data.data
+        if(resp.data.status == 200) {
+          console.log(user_info)
+          _this.userInfo.username = user_info.username
+          if(user_info.avatar){
+            _this.userInfo.avatar = user_info.avatar
+          }
+          localStorage.setItem('user_info', JSON.stringify(user_info))
+        }
+      })
+    },
     handleCommand(command) {
       let _this = this;
       if (command === 'logout') {
@@ -46,17 +65,20 @@ export default {
           type: 'warning'
         }).then(function () {
           _this.currentUserName = '游客';
+          localStorage.removeItem('access_token')
           _this.$router.replace({path: '/login'});
         }, function () {
           //取消
         })
       }
       if (command === 'MyHome') {
-        //getRequest("/userhome");
         _this.$store.commit('changeUserDrawer')
         console.log('drawer', _this.$store.state.userDrawer)
       }
     }
+  },
+  mounted() {
+    this.getUserInfo()
   }
 }
 </script>
@@ -79,16 +101,17 @@ export default {
   font-size: 22px;
   height: 70px;
   color: #fff;
-  background: #272F42;
+  background: #2B303B;
 }
 .user-notice {
   margin-right: 20px;
   line-height: 70px;
-  font-size: 20px;
+  font-size: 25px;
 }
 .user-name {
   margin-right: 20px;
   line-height: 70px;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
 }
 .user-avatar {
   padding-top: 10px;
@@ -100,7 +123,9 @@ export default {
   margin-top: 10px;
 }
 .item {
-  position: relative;
-  float: left;
+  float: right;
+  right: 18px;
+  margin-top: -5px;
+  margin-left: 10px;
 }
 </style>

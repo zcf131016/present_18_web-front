@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "push": "npm run build && pscp -pw ZCF24esds -P 22 -r dist/* root@159.75.51.228:/usr/local/nginx/html"
   },
   "dependencies": {
     "axios": "^0.21.1",

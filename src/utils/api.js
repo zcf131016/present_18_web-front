@@ -1,6 +1,5 @@
-import './http'
 import service from "@/utils/http";
-let base = 'localhost:8888';  // 后端接口
+import qs from 'qs'
 // // 获取本地token, 默认请求头带token
 // let token = window.localStorage['token'];
 // axios.defaults.headers.common['token'] = token;
@@ -9,18 +8,18 @@ let base = 'localhost:8888';  // 后端接口
 export const postRequest = (url, params) => {
   return service({
     method: 'post',
-    url: `${base}${url}`,
+    url: `${url}`,
     data: params,
-    transformRequest: [function (data) {
-      // 对接受到的数据进行转换
-      let ret = ''
-      for (let it in data) {
-        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      }
-      return ret
-    }],
+    // transformRequest: [function (data) {
+    //   // 对接受到的数据进行转换
+    //   let ret = ''
+    //   for (let it in data) {
+    //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    //   }
+    //   return ret
+    // }],
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/json'
     }
   });
 }
@@ -28,7 +27,7 @@ export const postRequest = (url, params) => {
 export const uploadFileRequest = (url, params) => {
   return service({
     method: 'post',
-    url: `${base}${url}`,
+    url: `${url}`,
     data: params,
     headers: {
       'Content-Type': 'multipart/form-data'
@@ -38,7 +37,7 @@ export const uploadFileRequest = (url, params) => {
 export const putRequest = (url, params) => {
   return service({
     method: 'put',
-    url: `${base}${url}`,
+    url: `${url}`,
     data: params,
     transformRequest: [function (data) {
       let ret = ''
@@ -56,7 +55,7 @@ export const putRequest = (url, params) => {
 export const deleteRequest = (url) => {
   return service({
     method: 'delete',
-    url: `${base}${url}`
+    url: `${url}`
   });
 }
 
@@ -64,7 +63,7 @@ export const deleteRequest = (url) => {
 export const getRequest = (url,params) => {
   return service({
     method: 'get',
-    data:params,
+    params: params,
     transformRequest: [function (data) {
       let ret = ''
       for (let it in data) {
@@ -75,6 +74,8 @@ export const getRequest = (url,params) => {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    url: `${base}${url}`
+    url: `${url}`
   });
 }
+
+

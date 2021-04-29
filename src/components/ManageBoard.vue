@@ -5,7 +5,7 @@
       <el-row>
         <el-col :span="4" v-for="(o, index) in group" :key="index" :offset="index > 0 ? 2 : 0">
           <el-card :body-style="{ padding: '0px' }">
-            <img :src="o.avata" class="image">
+            <img :src="o.avatar" class="image">
             <div style="padding: 14px;">
               <h1>{{o.name}}</h1>
               <div class="bottom clearfix">
@@ -22,32 +22,33 @@
 <script>
 export default {
   name: "ManageBoard",
+  components: {},
   data() {
     return {
       currentDate: new Date(),
       group: [
         {
           name: '林宇航',
-          avata: 'https://avatars.githubusercontent.com/u/30885631?v=4',
+          avatar: 'https://avatars.githubusercontent.com/u/30885631?v=4',
           sid: '200327140',
           github: 'https://github.com/YHCClin'
         },
         {
           name: '郑西坤',
           sid: '200327140',
-          avata: 'https://avatars.githubusercontent.com/u/30885631?v=4',
+          avatar: 'https://avatars.githubusercontent.com/u/30885631?v=4',
           github: 'https://github.com/YHCClin'
         },
         {
           name: '郑佳晨',
           sid: '200327140',
-          avata: 'https://avatars.githubusercontent.com/u/30885631?v=4',
+          avatar: 'https://avatars.githubusercontent.com/u/30885631?v=4',
           github: 'https://github.com/YHCClin'
         },
         {
           name: '郑超凡',
           sid: '200327140',
-          avata: 'https://avatars.githubusercontent.com/u/30885631?v=4',
+          avatar: 'https://avatars.githubusercontent.com/u/30885631?v=4',
           github: 'https://github.com/YHCClin'
         }
       ]
