@@ -1,6 +1,10 @@
 <template>
   <div class="router-info">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <span class="collapse-btn" @click="collapseChange">
+      <i v-if="!this.$store.state.isCollapse" class="el-icon-s-fold"></i>
+      <i v-else class="el-icon-s-unfold"></i>
+    </span>
+    <el-breadcrumb separator-class="el-icon-arrow-right" class="router">
       <el-breadcrumb-item
           v-for="(item,index) in breadList"
           :key="index"
@@ -15,7 +19,8 @@ export default {
   name: "BreadCrumb",
   data() {
     return {
-      breadList: []
+      breadList: [],
+      isCollapse: true
     }
   },
   watch: {
@@ -27,7 +32,7 @@ export default {
     isHome(route) {
       return route.name === "home";
     },
-    Menu: function () {
+    collapseChange() {
       this.$store.state.isCollapse = !this.$store.state.isCollapse
     },
     getBreadcrumb() {
@@ -49,11 +54,22 @@ export default {
 .router-info {
   display: flex;
   width: 100%;
+  height: 20px;
+  line-height: 20px;
   margin-left: 0px;
   padding-left: 0px;
   padding-top: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
   background: #FAFAFA;
+}
+.collapse-btn {
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.router {
+  font-size: 14px;
+  line-height: 20px;
 }
 </style>

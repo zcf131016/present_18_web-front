@@ -16,6 +16,7 @@ import BaseForm from "@/components/BaseForm";
 import ErrorPage from "@/views/ErrorPage";
 import MenuManage from "@/components/MenuManage";
 import SysParaManage from "@/components/SysParaManage";
+import signManage from "@/components/signManage";
 
 Vue.use(VueRouter)
 
@@ -56,6 +57,17 @@ const routes = [
           keepAlive: true,
           requireAuth: true,
           title: '角色管理'
+        }
+      },
+      {
+        path: '/signManage',
+        name: '签到管理',
+        component: signManage,
+        hidden: true,
+        meta: {
+          keepAlive: true,
+          requireAuth: true,
+          title: '签到管理'
         }
       },
       {

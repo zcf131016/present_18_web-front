@@ -413,25 +413,26 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           this.countDown(time)
         }, 1000)
       },
-      // getAuthToken() {
-      //   let token = this.getUrlKey('token')
-      //   let id = this.getUrlKey('id')
-      //   if(token) {
-      //     console.log('hello')
-      //     localStorage.setItem('access_token', token)
-      //     localStorage.setItem('user_id', id)
-      //     this.$router.push('/')
-      //   }
-      // },
-      // getUrlKey: function (name) {
-      //   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [""])[1].replace(/\+/g, '%20')) || null
-      // }
+      getAuthToken() {
+        let token = this.getUrlKey('token')
+        let id = this.getUrlKey('id')
+        if(token) {
+          console.log('hello')
+          localStorage.setItem('access_token', token)
+          localStorage.setItem('user_id', id)
+          this.$router.push('/')
+        }
+      },
+      getUrlKey: function (name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.href) || [""])[1].replace(/\+/g, '%20')) || null
+      }
     },
     mounted() {
       this.refreshCode()
       this.getUniversity()
       this.checkPassword()
       this.getColleges(this.registerForm.schoolId)
+      this.getAuthToken()
     }
   }
 </script>

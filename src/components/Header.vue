@@ -101,7 +101,7 @@ export default {
   font-size: 22px;
   height: 70px;
   color: #fff;
-  background: #272F42;
+  background: #2B303B;
 }
 .user-notice {
   margin-right: 20px;

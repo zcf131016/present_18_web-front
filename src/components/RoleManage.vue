@@ -34,7 +34,13 @@
         <div slot="header" class="clearfix">
           <span class="role-span">角色列表</span>
         </div>
-        <el-table ref="multipleTable" highlight-current-row style="width: 100%;" :data="TableData.slice((currentPage-1)*pageSize,currentPage*pageSize)" @selection-change="handleSelectionChange">
+        <el-table
+            ref="multipleTable"
+            highlight-current-row
+            style="width: 100%;"
+            :data="TableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+            @selection-change="handleSelectionChange"
+        >
           <el-table-column type="selection" width="55" />
           <el-table-column prop="id" label="ID" />
           <el-table-column prop="name" label="名称" />
@@ -44,15 +50,19 @@
             <template slot-scope="scope">
               <el-button
                   size="mini"
-                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  class="op-button"
+                  icon="el-icon-edit"
+                  @click="handleEdit(scope.$index, scope.row)"></el-button>
               <el-popconfirm
                 title="确定删除这个条目吗？"
               >
                 <el-button
+                    class="op-button"
                     slot="reference"
                     size="mini"
+                    icon="el-icon-delete"
                     type="danger"
-                    @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    @click="handleDelete(scope.$index, scope.row)"></el-button>
               </el-popconfirm>
 
             </template>
@@ -79,7 +89,6 @@
             <span class="role-span">菜单分配</span>
           </el-tooltip>
           <el-button
-              v-permission="['admin','roles:edit']"
               :disabled="!showButton"
               :loading="menuLoading"
               icon="el-icon-check"
@@ -91,10 +100,12 @@
         </div>
         <el-tree
             :data="menus"
+            ref="menuTree"
             show-checkbox
+            highlight-current
             node-key="id"
             :default-expanded-keys="[2, 3]"
-            :default-checked-keys="[5]"
+            :default-checked-keys="AssignedMenu"
             :props="defaultProps">
         </el-tree>
       </el-card>
@@ -143,7 +154,7 @@
 </template>
 
 <script>
-import {getRequest} from "@/utils/api";
+import {getRequest, postRequest} from "@/utils/api";
 
 export default {
   name: "RoleManage",
@@ -152,6 +163,7 @@ export default {
       pageSize: 9,
       currentPage: 1,
       multipleSelection: [],
+      AssignedMenu: [],
       query: '',
       select: '',
       rules: {
@@ -176,70 +188,9 @@ export default {
         description: '-'
       },
       TableData: [],
-      menus: [
-        {
-          id: 1,
-          label: '数据面板'
-        },
-        {
-          id: 2,
-          label: '角色管理'
-        },
-        {
-          id: 3,
-          label: '菜单管理'
-        },
-        {
-          id: 4,
-          label: '用户管理',
-          children: [
-            {
-              id: 1,
-              label: '教师管理',
-            },
-            {
-              id: 2,
-              label: '学生管理',
-            }
-          ]
-        },
-        {
-          id: 5,
-          label: '课程管理',
-        },
-        {
-          id: 6,
-          label: '数据字典',
-        },
-        {
-          id: 7,
-          label: '参数管理',
-        },
-        {
-          id: 8,
-          label: '测试页面',
-        },
-        {
-          id: 9,
-          label: '表单相关',
-          children: [
-            {
-              id: 1,
-              label: '基础列表',
-            },
-            {
-              id: 2,
-              label: '基础表单',
-            },
-            {
-              id: 3,
-              label: '500',
-            }
-          ]
-        }
-      ],
-      currentId: 0, menuLoading: false, showButton: false,
-      defaultProps: { children: 'children', label: 'label', isLeaf: 'leaf' },
+      menus: [],
+      currentId: 0, menuLoading: false, showButton: true,
+      defaultProps: { children: 'children', label: 'title', isLeaf: 'leaf' },
       menuIds: [], depts: [], deptDatas: [], // 多选时使用
     }
   },
@@ -271,8 +222,18 @@ export default {
     addItem () {
     },
     menuChange() {},
-    saveMenu() {},
-    getMenuDatas: function () {},
+    saveMenu() {
+      let selectedMenu = this.$refs.menuTree.getHalfCheckedKeys().concat(this.$refs.menuTree.getCheckedKeys())
+      console.log('当前菜单',selectedMenu)
+      // 提交菜单分配
+      postRequest('',{}).then(resp => {
+
+      })
+    },
+    getMenu: function () {
+      this.menus = this.$store.state.menus
+      console.log('menus from store:',this.menus)
+    },
     handleEdit: function (index, row){
       this.dialogFormVisible = true
       this.RoleForm.name = row.name
@@ -289,7 +250,10 @@ export default {
     }
   },
   mounted() {
+  },
+  created() {
     this.getAllRole()
+    this.getMenu()
   }
 }
 </script>
@@ -303,5 +267,8 @@ export default {
   margin-top: 30px;
   margin-right: 30px;
   margin-bottom: 30px;
+}
+.op-button {
+  margin-left: 5px;
 }
 </style>

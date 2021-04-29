@@ -3,152 +3,60 @@
     <el-menu
         class="sidebar-el-menu el-menu-vertical-demo"
         :default-active="onRoutes"
-        :collapse="isCollapse"
-        background-color="#324158"
-        text-color="#bfcbd9"
+        :collapse="this.$store.state.isCollapse"
+        background-color="#FAFAFA"
+        text-color="#ADADAD"
         active-text-color="#5172D0"
         unique-opened
         router
     >
       <template v-for="item in items">
-        <template v-if="item.subs">
-          <el-submenu :index="item.index" :key="item.index">
+        <template v-if="item.children.length > 0">
+          <el-submenu :index="item.path" :key="item.path">
             <template slot="title">
               <i :class="item.icon"></i>
               <span slot="title">{{ item.title }}</span>
             </template>
-            <template v-for="subItem in item.subs">
+            <template v-for="subItem in item.children">
               <el-submenu
-                  v-if="subItem.subs"
-                  :index="subItem.index"
-                  :key="subItem.index"
+                  v-if="subItem.children.length > 0"
+                  :index="subItem.path"
+                  :key="subItem.path"
               >
                 <template slot="title">{{ subItem.title }}</template>
                 <el-menu-item
-                    v-for="(threeItem,i) in subItem.subs"
+                    v-for="(threeItem,i) in subItem.children"
                     :key="i"
-                    :index="threeItem.index"
+                    :index="threeItem.path"
                 >{{ threeItem.title }}</el-menu-item>
               </el-submenu>
               <el-menu-item
                   v-else
-                  :index="subItem.index"
-                  :key="subItem.index"
+                  :index="subItem.path"
+                  :key="subItem.path"
               >{{ subItem.title }}</el-menu-item>
             </template>
           </el-submenu>
         </template>
         <template v-else>
-          <el-menu-item :index="item.index" :key="item.index">
+          <el-menu-item :index="item.path" :key="item.path" :disabled="item.hidden == '1'">
             <i :class="item.icon"></i>
             <span slot="title">{{ item.title }}</span>
           </el-menu-item>
         </template>
       </template>
     </el-menu>
-    <div class="collapse-btn" @click="collapseChange">
-      <i v-if="!isCollapse" class="el-icon-s-fold"></i>
-      <i v-else class="el-icon-s-unfold"></i>
-    </div>
   </div>
 </template>
 
 <script>
+import {getRequest} from "@/utils/api";
+
 export default {
   data() {
     return {
-      isCollapse: false,
-      items: [
-        {
-          icon: 'el-icon-house',
-          index: 'manageBoard',
-          title: 'DashBoard'
-        },
-        {
-          icon: 'el-icon-user-solid',
-          index: 'roleManage',
-          title: '角色管理'
-        },
-        {
-          icon: 'el-icon-menu',
-          index: 'menuManage',
-          title: '菜单管理'
-        },
-        {
-          icon: 'el-icon-user',
-          index: '2',
-          title: '用户管理',
-          subs: [
-            {
-              icon: 'el-icon-s-custom',
-              index: 'teacherManage',
-              title: '教师管理'
-            },
-            {
-              icon: 'el-icon-s-custom',
-              index: 'studentManage',
-              title: '学生管理'
-            }
-          ]
-        },
-        {
-          icon: 'el-icon-tickets',
-          index: 'lessonManage',
-          title: '课程管理'
-        },
-        {
-          icon: 'el-icon-s-data',
-          index: 'dataDictionary',
-          title: '数据字典'
-        },
-        {
-          icon: 'el-icon-s-data',
-          index: 'sysParaManage',
-          title: '参数管理'
-        },
-        {
-          icon: 'el-icon-tickets',
-          index: 'test',
-          title: '测试页面'
-        },
-        {
-          icon: 'el-icon-files',
-          index: '3',
-          title: '表单相关',
-          subs: [
-            {
-              index: 'baseTable',
-              title: '基础列表'
-            },
-            {
-              index: 'baseForm',
-              title: '基础表单'
-            },
-            {
-              index: '500',
-              title: '500异常页面'
-            },
-            {
-              index: 'errorPage',
-              title: '自定义异常页面'
-            },
-            {
-              index: '3-2',
-              title: '三级菜单',
-              subs: [
-                {
-                  index: '403',
-                  title: '403页面'
-                },
-                {
-                  index: '404',
-                  title: '404页面'
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      isCollapse: true,
+      items: []
     };
   },
   methods: {
@@ -161,6 +69,17 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    getMenu() {
+      let _this = this
+      let user_id = localStorage.getItem('user_id')
+      getRequest('/menus/user/' + user_id, {}).then(resp => {
+        if (resp.data.status == 200) {
+          _this.items = resp.data.data
+          _this.$store.commit('setMenus', _this.items)
+          // console.log('menus form store: ', _this.$store.state.menus)
+        }
+      })
     }
   },
   computed: {
@@ -171,6 +90,9 @@ export default {
   created() {
     this.isCollapse = this.$store.state.isCollapse
     console.log(this.$store.state.isCollapse)
+    this.getMenu()
+  },
+  mounted() {
   }
 };
 </script>
@@ -180,12 +102,13 @@ export default {
   display: block;
   position: fixed;
   width: 250px;
+  margin: 0;
   left: 0;
   top: 70px;
   bottom: 0;
 }
 .collapse-btn {
-  background: #3A5799;
+  background: #ADADAD;
   width: 40px;
   height: 40px;
   border-radius: 50%;

@@ -4,7 +4,7 @@
         :visible.sync="drawer"
         direction="rtl"
         :with-header="false"
-        size="70%">
+        size="50%">
       <el-tabs style="margin-left: 20px;margin-right: 20px;position: absolute;top: 10px;width: 95%" v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="我的信息" name="first">
           <div id="user-info-head">

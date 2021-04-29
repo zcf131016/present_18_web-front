@@ -13,9 +13,11 @@
             </keep-alive>
           </transition>
         </div>
+        <Copyright></Copyright>
       </div>
     </div>
     <UserInfo></UserInfo>
+
   </el-container>
 </template>
 
@@ -26,6 +28,7 @@ import yHeader from "@/components/Header";
 import BreadCrumb from "@/components/BreadCrumb";
 import UserInfo from "@/components/UserInfo";
 import Tag from "@/components/Tags";
+import Copyright from "@/components/widgets/Copyright";
 
 export default {
   name: 'Home',
@@ -34,7 +37,8 @@ export default {
     yHeader,
     BreadCrumb,
     UserInfo,
-    Tag
+    Tag,
+    Copyright
   },
   data() {
     return {
@@ -69,7 +73,8 @@ export default {
     right: 10px;
     top: 70px;
     bottom: 0;
-    padding-bottom: 30px;
+    margin: 0;
+    padding: 0;
     -webkit-transition: left .3s ease-in-out;
     transition: left .3s ease-in-out;
     background: #fafafa;
@@ -81,7 +86,8 @@ export default {
     top: 70px;
     right: 10px;
     bottom: 0;
-    padding-bottom: 40px;
+    margin: 0;
+    padding: 0;
     -webkit-transition: left .3s ease-in-out;
     transition: left .3s ease-in-out;
     background: #fafafa;
@@ -100,8 +106,19 @@ export default {
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
   }
-  ::-webkit-scrollbar {
-    /*隐藏滚轮*/
-    display: none;
+  .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
   }
+
+  .icp-info a {
+    color: #505458;
+  }
+
+  /*::-webkit-scrollbar {*/
+  /*  !*隐藏滚轮*!*/
+  /*  display: none;*/
+  /*}*/
 </style>

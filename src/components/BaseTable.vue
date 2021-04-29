@@ -94,7 +94,7 @@ export default {
   name: "BaseTable",
   data() {
     return {
-      pageSize: 9,
+      pageSize: 10,
       currentPage: 1,
       select: '学号',
       tableData: [{
@@ -205,7 +205,7 @@ export default {
   padding: 10px;
   padding-bottom: 10px;
   height: 100%;
-  top: 10px;
+  /*top: 10px;*/
 }
 .block {
   float: right;

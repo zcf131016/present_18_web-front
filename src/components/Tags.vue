@@ -40,13 +40,13 @@ export default {
       if (item) {
         delItem.path === this.$route.fullPath && this.$router.push(item.path);
       }else{
-        this.$router.push('/home');
+        this.$router.push('/');
       }
     },
     // 关闭全部标签
     closeAll(){
       this.tagsList = [];
-      this.$router.push('/home');
+      this.$router.push('/');
     },
     // 关闭其他标签
     closeOther(){
@@ -98,7 +98,7 @@ export default {
           }else if(i > 0){
             this.$router.push(this.tagsList[i-1].path);
           }else{
-            this.$router.push('/home');
+            this.$router.push('/');
           }
           this.tagsList.splice(i, 1);
           break;

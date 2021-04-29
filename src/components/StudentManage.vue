@@ -1,13 +1,10 @@
 <template>
   <div class="student-info">
-    <el-tabs type="border-card">
-      <el-tab-pane label="全部学生">
+<!--    <el-tabs type="border-card">-->
+<!--      <el-tab-pane label="全部学生">-->
         <BaseTable></BaseTable>
-      </el-tab-pane>
-      <el-tab-pane label="添加学生">
-
-      </el-tab-pane>
-    </el-tabs>
+<!--      </el-tab-pane>-->
+<!--    </el-tabs>-->
   </div>
 </template>
 
@@ -32,6 +29,5 @@ export default {
   padding: 10px;
   padding-bottom: 10px;
   height: 100%;
-  top: 10px;
 }
 </style>
