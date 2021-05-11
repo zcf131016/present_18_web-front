@@ -17,6 +17,7 @@ import ErrorPage from "@/views/ErrorPage";
 import MenuManage from "@/components/MenuManage";
 import SysParaManage from "@/components/SysParaManage";
 import signManage from "@/components/signManage";
+import UsersManage from "@/components/UsersManage";
 
 Vue.use(VueRouter)
 
@@ -102,6 +103,16 @@ const routes = [
           title: '用户管理'
         },
         children: [
+          {
+            path: '/usersManage',
+            name: '用户管理',
+            component: UsersManage,
+            meta: {
+              keepAlive: true,
+              requireAuth: true,
+              title: '用户管理'
+            }
+          },
           {
             path: '/studentManage',
             name: '学生管理',

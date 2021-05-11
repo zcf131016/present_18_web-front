@@ -270,7 +270,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           }
         })
         if(flag) {
-          this.$alert('尴尬','手机号已被注册！')
+          this.$message('尴尬','手机号已被注册！')
           return
         }
         postRequest('/users', {
@@ -363,7 +363,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           this.$message('请输入手机号！')
           return
         }
-        getRequest('/sms/' + phone,{
+        postRequest('/sms/' + phone,{
         }).then(resp => {
           if(resp.status == 200) {
             if (resp.data.status == 200){

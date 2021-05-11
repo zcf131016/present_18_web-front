@@ -37,6 +37,7 @@
         <el-table
             ref="multipleTable"
             highlight-current-row
+            @current-change="getRoleMenu"
             style="width: 100%;"
             :data="TableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
             @selection-change="handleSelectionChange"
@@ -102,10 +103,11 @@
             :data="menus"
             ref="menuTree"
             show-checkbox
+            check-strictly
             highlight-current
             node-key="id"
             :default-expanded-keys="[2, 3]"
-            :default-checked-keys="AssignedMenu"
+            :default-checked-keys="this.AssignedMenu"
             :props="defaultProps">
         </el-tree>
       </el-card>
@@ -195,6 +197,24 @@ export default {
     }
   },
   methods: {
+    getRoleMenu(val) {
+      let _this = this
+      _this.loading = true
+      this.AssignedMenu = []
+      getRequest('/menus/role/' + val.id, {}).then(resp => {
+        let menus = resp.data.data
+        for (let i = 0;i < menus.length;i++) {
+
+          _this.AssignedMenu.push(menus[i].id)
+          for(let j = 0;j < menus[i].children.length;j++){
+            _this.AssignedMenu.push(menus[i].children[j].id)
+          }
+        }
+        _this.$refs.menuTree.setCheckedKeys([])
+        _this.$refs.menuTree.setCheckedKeys(_this.AssignedMenu)
+        _this.loading = false
+      })
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -213,7 +233,7 @@ export default {
         if (resp.data.status == 200) {
           _this.TableData = resp.data.data
         } else {
-          _this.$alert(resp.data.msg)
+          _this.$message(resp.data.msg)
         }
       })
     },
@@ -232,7 +252,6 @@ export default {
     },
     getMenu: function () {
       this.menus = this.$store.state.menus
-      console.log('menus from store:',this.menus)
     },
     handleEdit: function (index, row){
       this.dialogFormVisible = true
