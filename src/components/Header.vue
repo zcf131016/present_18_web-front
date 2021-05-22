@@ -5,7 +5,20 @@
     </div>
     <div class="header-right">
       <div class="user-notice">
-          <i class="el-icon-bell"></i>
+        <el-popover
+            placement="bottom"
+            ref="message"
+            title="消息"
+            width="300"
+            trigger="hover"
+            content="消息列表">
+          <el-table :data="notices">
+            <el-table-column property="date" label="日期"></el-table-column>
+            <el-table-column property="name" label="姓名"></el-table-column>
+            <el-table-column property="content" label="内容"></el-table-column>
+          </el-table>
+        </el-popover>
+          <i v-popover:message class="el-icon-bell notice"></i>
         <el-badge :value="message" class="item" type="warning" />
       </div>
       <div class="user-name">
@@ -13,7 +26,7 @@
       </div>
       <div class="user-avatar">
         <el-dropdown @command="handleCommand">
-          <el-avatar :size="50" :src="userInfo.avatar"></el-avatar>
+          <el-avatar class="avatar" :size="50" :src="userInfo.avatar"></el-avatar>
                 <el-dropdown-menu class="el-dropdown-link" slot="dropdown">
                   <el-dropdown-item command="MyHome">个人主页</el-dropdown-item>
                   <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
@@ -84,6 +97,7 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Pattaya&display=swap');
 .header-right {
   display: flex;
   position: relative;
@@ -102,6 +116,7 @@ export default {
   height: 70px;
   color: #fff;
   background: #2B303B;
+  z-index: 2;
 }
 .user-notice {
   margin-right: 20px;
@@ -111,7 +126,7 @@ export default {
 .user-name {
   margin-right: 20px;
   line-height: 70px;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: 'Pattaya', sans-serif;
 }
 .user-avatar {
   padding-top: 10px;
@@ -127,5 +142,34 @@ export default {
   right: 18px;
   margin-top: -5px;
   margin-left: 10px;
+}
+.avatar {
+  transition: ease-in-out 1s;
+}
+.avatar:hover {
+  cursor: pointer;
+  transform: rotate(360deg);
+}
+.notice {
+  transition: ease-in-out 1s;
+}
+.notice:hover {
+  cursor: pointer;
+  animation: notice 1s .5s infinite;
+}
+@keyframes notice {
+  20% {
+    transform: scale(1.1) rotate(-20deg);
+  }
+  40% {
+    transform: scale(0.9) rotate(20deg);
+  }
+  60% {
+    transform: scale(1.2) rotate(-10deg);
+  }
+  100% {
+    transform: scale(1) rotate(10deg);
+  }
+
 }
 </style>

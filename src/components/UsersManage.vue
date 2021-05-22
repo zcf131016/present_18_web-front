@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import {getRequest} from "@/utils/api";
+import {deleteRequest, getRequest} from "@/utils/api";
 
 export default {
   name: "UsersManage",
@@ -184,10 +184,18 @@ export default {
     addItem () {
 
     },
-    handleForbidden() {
+    handleForbidden(index, row) {
 
     },
-    handleDelete(){},
+    handleDelete(index, row){
+      let _this = this
+      deleteRequest('/users/' + row.id, {}).then(resp => {
+        if(resp.data.status == 200) {
+          _this.$message(resp.data.msg)
+          _this.getUsers()
+        }
+      })
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
