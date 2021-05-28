@@ -151,6 +151,8 @@ export default {
   text-overflow: ellipsis;
   margin-right: 5px;
   color: #666;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .tags-li.active .tags-li-title {

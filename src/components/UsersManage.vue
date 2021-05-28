@@ -122,7 +122,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -165,6 +165,19 @@ export default {
           _this.tableData[i].enable = _this.tableData[i] ? '可用' : '禁用'
           _this.tableData[i].phone = _this.tableData[i].phone == null ? '未绑定' : _this.tableData[i].phone
           _this.tableData[i].email = _this.tableData[i].email == null ? '未绑定' : _this.tableData[i].email
+          _this.tableData[i].lastLoginTime = _this.tableData[i].lastLoginTime == null ? '无登录记录' : _this.tableData[i].lastLoginTime
+          let role_id = _this.tableData[i].roleId
+          switch (role_id) {
+            case 1:
+              _this.tableData[i].roleId = '管理员'
+              break
+            case 2:
+              _this.tableData[i].roleId = '教师'
+              break
+            case 3:
+              _this.tableData[i].roleId = '学生'
+              break
+          }
         }
         console.log('hello', resp.data.data)
       })
@@ -181,8 +194,10 @@ export default {
     deleteSelected() {
 
     },
-    addItem () {
-
+    addUser () {
+      // 添加用户
+      this.dialogFormVisible = false
+      let _this = this
     },
     handleForbidden(index, row) {
 
