@@ -81,13 +81,30 @@
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-              size="mini"
-              @click="handleForbidden(scope.$index, scope.row)">{{scope.row.enable ? '禁用' : '解禁'}}</el-button>
-          <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-popconfirm
+              class="buttons"
+              @confirm="handleForbidden(scope.$index, scope.row)"
+              title="确定禁用该用户？"
+          >
+            <el-button
+                size="mini"
+                slot="reference"
+            >{{scope.row.enable ? '禁用' : '解禁'}}</el-button>
+          </el-popconfirm>
+          <el-popconfirm
+              class="buttons"
+              @confirm="handleDelete(scope.$index, scope.row)"
+              confirmButtonText='好的'
+              cancelButtonText='不用了'
+              icon="el-icon-info"
+              iconColor="red"
+              title="确定删除该用户？"
+          >
+            <el-button
+                size="mini"
+                type="danger"
+                slot="reference">删除</el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +115,7 @@
           :current-page.sync="currentPage"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
-          :total="this.total">
+          :total="this.tableData.length">
       </el-pagination>
     </div>
     <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
@@ -156,10 +173,10 @@ export default {
       let _this = this
       _this.loading = true
       getRequest('/users',{
-        pageNum: _this.currentPage,
-        pageSize: _this.pageSize
+        // pageNum: _this.currentPage,
+        // pageSize: _this.pageSize
       }).then(resp => {
-        _this.tableData = resp.data.data.list
+        _this.tableData = resp.data.data.list.filter(function (item) {return item.roleId=='3'})
         _this.total = resp.data.data.total
         for(let i = 0;i < _this.tableData.length;i++) {
           _this.tableData[i].enable = _this.tableData[i] ? '可用' : '禁用'
@@ -244,7 +261,7 @@ export default {
   margin-bottom: 30px;
 }
 .buttons {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 </style>
 

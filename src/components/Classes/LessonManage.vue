@@ -39,9 +39,9 @@
       <el-table-column
           prop="id"
           label="班课ID"
-          width="50px"
+          width="80px"
       >
-        <!--        <template slot-scope="scope">{{ scope.row.uid }}</template>-->
+<!--                <template slot-scope="scope">{{ scope.row.uid }}</template>-->
       </el-table-column>
       <el-table-column
           prop="name"
@@ -75,7 +75,7 @@
       >
       </el-table-column>
 
-      <el-table-column label="操作"  fixed="right" width="200px">
+      <el-table-column label="操作"  fixed="right" width="300px">
         <template slot-scope="scope">
           <el-button
               size="mini"
@@ -83,11 +83,41 @@
               @click="handleForbidden(scope.$index, scope.row)">{{scope.row.isAllow ? '允许加入' : '禁止加入'}}</el-button>
           <el-button
               size="mini"
+              type="success"
+              @click="getMembers(scope.$index, scope.row)">班课成员</el-button>
+          <el-button
+              size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              @click="handleDelete(scope.$index, scope.row)">删除班课</el-button>
         </template>
       </el-table-column>
     </el-table>
+<!--    班课成员信息-->
+    <el-drawer
+        title="班课成员"
+        :visible.sync="showMembers"
+        direction="rtl"
+        size="50%">
+      <el-table :data="MembersData" style="margin: 20px;margin-right: 20px">
+        <el-table-column property="id" label="ID" width="50px"></el-table-column>
+        <el-table-column property="username" label="姓名" width="150px"></el-table-column>
+        <el-table-column property="experiment" label="经验值" max-width="200px"></el-table-column>
+        <el-table-column label="操作" width="300px">
+          <template slot-scope="scope">
+            <el-button
+                size="mini"
+                type="success"
+                @click="handleModify(scope.$index, scope.row)">修改经验值</el-button>
+            <el-button
+                size="mini"
+                type="danger"
+                @click="handleOut(scope.$index, scope.row)">移出班课</el-button>
+          </template>
+        </el-table-column>
+
+      </el-table>
+    </el-drawer>
+<!--    班课成员信息结束-->
     <div class="block">
       <el-pagination
           @size-change="handleSizeChange"
@@ -103,10 +133,6 @@
         <el-form-item label="班课名" label-width="120px">
           <el-input v-model="ClassForm.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="班课号" label-width="120px">
-          <el-input v-model="ClassForm.number" autocomplete="off"></el-input>
-        </el-form-item>
-
         <el-form-item label="教室" label-width="120px">
           <el-input v-model="ClassForm.classroom" autocomplete="off"></el-input>
         </el-form-item>
@@ -133,17 +159,20 @@ export default {
       currentPage: 1,
       select: '学号',
       tableData: [],
+      MembersData: [],
       total: 0,
       multipleSelection: [],
       dialogFormVisible: false,
+      showMembers: false,
       search: '',
       ClassForm: {
         name: '',
-        number: '',
-        isAllow: true,
         semester: '',
-        classroom: '',
-        teacher_id: ''
+        classroom: ''
+      },
+      student: {
+        username: '',
+
       }
     }
   },
@@ -171,6 +200,12 @@ export default {
     deleteSelected() {
 
     },
+    handleOut (index, row) {
+
+    },
+    handleModify (index, row) {
+
+    },
     addCourses () {
       // 创建班课
       this.dialogFormVisible = false
@@ -187,6 +222,9 @@ export default {
       })
     },
     handleForbidden(index, row) {
+
+    },
+    handleMember(index, row) {
 
     },
     handleDelete(index, row){
@@ -208,6 +246,17 @@ export default {
       console.log(`当前页: ${val}`);
       this.currentPage = val
       this.getCourses()
+    },
+    getMembers (index, row) {
+      let _this = this
+      getRequest('/courses/members/' + row.id, {
+      }).then(resp => {
+        if (resp.data.status == 200) {
+          _this.MembersData = resp.data.data
+          _this.showMembers = true
+          console.log('members', _this.MembersData)
+        }
+      })
     }
   },
   mounted() {

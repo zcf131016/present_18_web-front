@@ -7,7 +7,7 @@ import StudentManage from "@/components/StudentManage";
 import ManageBoard from "@/components/ManageBoard";
 import RoleManage from "@/components/RoleManage";
 import DataDictionary from "@/components/DataDictionary";
-import LessonManage from "@/components/LessonManage";
+import LessonManage from "@/components/Classes/LessonManage";
 import UserManage from "@/components/UserManage";
 import HelloWorld from "@/components/HelloWorld";
 import BaseTable from "@/components/BaseTable";
