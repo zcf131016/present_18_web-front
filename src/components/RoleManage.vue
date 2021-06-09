@@ -46,7 +46,7 @@
           <el-table-column prop="id" label="ID" />
           <el-table-column prop="name" label="名称" />
           <el-table-column :show-overflow-tooltip="true" prop="remark" label="描述" />
-          <el-table-column :show-overflow-tooltip="true" width="135px" prop="create_time" label="创建日期" />
+<!--          <el-table-column :show-overflow-tooltip="true" width="135px" prop="create_time" label="创建日期" />-->
           <el-table-column label="操作" width="200px" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button
@@ -166,6 +166,7 @@ export default {
       currentPage: 1,
       multipleSelection: [],
       AssignedMenu: [],
+      currentRoleId: 0,
       query: '',
       select: '',
       rules: {
@@ -201,10 +202,10 @@ export default {
       let _this = this
       _this.loading = true
       this.AssignedMenu = []
+      _this.currentRoleId = val.id
       getRequest('/menus/role/' + val.id, {}).then(resp => {
         let menus = resp.data.data
         for (let i = 0;i < menus.length;i++) {
-
           _this.AssignedMenu.push(menus[i].id)
           for(let j = 0;j < menus[i].children.length;j++){
             _this.AssignedMenu.push(menus[i].children[j].id)
@@ -243,12 +244,20 @@ export default {
     },
     menuChange() {},
     saveMenu() {
+      let _this = this
       let selectedMenu = this.$refs.menuTree.getHalfCheckedKeys().concat(this.$refs.menuTree.getCheckedKeys())
       console.log('当前菜单',selectedMenu)
+      console.log('当前角色',_this.currentRoleId)
       // 提交菜单分配
-      postRequest('',{}).then(resp => {
-
-      })
+      for(let id of selectedMenu)
+      {
+        postRequest('/menus/role',{
+          roleId: _this.currentRoleId,
+          menuId: id
+        }).then(resp => {
+            _this.$message(resp.data.msg)
+        })
+      }
     },
     getMenu: function () {
       this.menus = this.$store.state.menus

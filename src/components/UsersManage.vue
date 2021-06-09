@@ -1,6 +1,6 @@
 <template>
   <div class="base-table">
-    <div style="margin-top: 20px;display: flex;margin-bottom: 20px">
+    <div style="width: 100%;height: 60px;padding: 0px;padding-left: 0;margin-top: 0;background: #FAFAFA;display: flex;margin-bottom: 20px;position: fixed;z-index: 2">
       <div class="buttons">
         <el-button @click="toggleSelection()" type="warning">取消选择</el-button>
       </div>
@@ -25,12 +25,13 @@
         </el-input>
       </div>
     </div>
-    <el-divider></el-divider>
+    <el-divide></el-divide>
     <el-table
         ref="multipleTable"
+        max-height="800px"
         :data="tableData"
         tooltip-effect="dark"
-        style="width: 100%"
+        style="width: 100%;margin-top: 80px"
         @selection-change="handleSelectionChange">
       <el-table-column
           type="selection"

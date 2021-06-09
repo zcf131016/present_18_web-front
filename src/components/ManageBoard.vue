@@ -47,7 +47,7 @@ export default {
         },
         {
           name: '郑超凡',
-          sid: '200327140',
+          sid: '200327119',
           avatar: 'https://avatars.githubusercontent.com/u/30885631?v=4',
           github: 'https://github.com/YHCClin'
         }

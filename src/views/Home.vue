@@ -23,11 +23,11 @@
 
 <script>
 // @ is an alias to /src
-import ySidebar from "@/components/Sidebar";
-import yHeader from "@/components/Header";
-import BreadCrumb from "@/components/BreadCrumb";
+import ySidebar from "@/components/widgets/Sidebar";
+import yHeader from "@/components/widgets/Header";
+import BreadCrumb from "@/components/widgets/BreadCrumb";
 import UserInfo from "@/components/UserInfo";
-import Tag from "@/components/Tags";
+import Tag from "@/components/widgets/Tags";
 import Copyright from "@/components/widgets/Copyright";
 
 export default {
@@ -97,7 +97,6 @@ export default {
     width: auto;
     height: 100%;
     padding: 10px;
-    overflow-y: scroll;
     box-sizing: border-box;
   }
   .el-select .el-input {

@@ -60,7 +60,7 @@
       </el-form>
 <!--      注册-->
       <el-form v-else-if="this.mode==='register'" :rules="rules" class="login-container" label-position="left"
-               label-width="0px" v-loading="loading" :model="registerForm" ref="registerForm">
+               label-width="0px" v-loading="loading" :model="this.registerForm" ref="registerForm">
         <h1 class="login_title">注册</h1>
         <el-form-item prop="username">
           <el-input type="string" v-model="registerForm.username" auto-complete="off" placeholder="用户名"></el-input>
@@ -68,9 +68,9 @@
         <el-form-item prop="phone">
           <el-input type="string" v-model="registerForm.phone" auto-complete="off" placeholder="手机号"></el-input>
         </el-form-item>
-        <el-form-item prop="number">
-          <el-input type="string" v-model="registerForm.number" auto-complete="off" placeholder="学号"></el-input>
-        </el-form-item>
+<!--        <el-form-item prop="number">-->
+<!--          <el-input type="string" v-model="registerForm.number" auto-complete="off" placeholder="学号"></el-input>-->
+<!--        </el-form-item>-->
         <el-form-item prop="password">
           <el-input type="password" v-model="registerForm.password" auto-complete="off" placeholder="密码" show-password></el-input>
         </el-form-item>
@@ -93,7 +93,7 @@
                 :value="item.id">
             </el-option>
           </el-select>
-          <el-select v-model.number="registerForm.collegeId" placeholder="学院">
+          <el-select v-model.number="registerForm.collegeId" placeholder="学院" style="margin-left: 5px">
             <el-option
                 v-for="item in colleges"
                 :key="item.id"
@@ -102,10 +102,10 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="性别" label-width="40px">
-          <el-radio v-model="registerForm.sex" label="男">男</el-radio>
-          <el-radio v-model="registerForm.sex" label="女">女</el-radio>
-        </el-form-item>
+<!--        <el-form-item label="性别" label-width="40px">-->
+<!--          <el-radio v-model="registerForm.sex" label="男">男</el-radio>-->
+<!--          <el-radio v-model="registerForm.sex" label="女">女</el-radio>-->
+<!--        </el-form-item>-->
         <el-form-item style="width: 100%">
           <el-button type="info" @click.native.prevent="onRegister" style="width: 100%">注册</el-button>
         </el-form-item>
@@ -149,7 +149,7 @@
 </template>
 <script>
 import {postRequest, getRequest, putRequest} from '../utils/api'
-  import SIdentify from "@/components/Identify";
+  import SIdentify from "@/components/widgets/Identify";
   export default{
     name: 'Login',
     components: {
@@ -262,27 +262,28 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
       onRegister: function () {
         let _this = this
         this.loading = true
-        let flag = getRequest('/users/phone/' + this.registerForm.phone,{}).then(resp => {
-          if (resp.data.status == 1) {
-            return true
-          } else {
-            return false
-          }
-        })
-        if(flag) {
-          this.$message('尴尬','手机号已被注册！')
-          return
-        }
+        // let flag = getRequest('/users/phone/' + this.registerForm.phone,{}).then(resp => {
+        //   if (resp.data.status == 1) {
+        //     return true
+        //   } else {
+        //     return false
+        //   }
+        // })
+        // if(flag) {
+        //   this.$message('手机号已被注册！')
+        //   this.loading = false
+        //   return
+        // }
         postRequest('/users', {
-          "code": this.registerForm.smsCode,
-          "password": this.registerForm.password,
-          "phone": this.registerForm.phone,
-          "roleId": this.registerForm.roleId,
-          "username": this.registerForm.username,
+          username: this.registerForm.username,
+          code: this.registerForm.smsCode,
+          password: this.registerForm.password,
+          phone: this.registerForm.phone,
+          // "roleId": this.registerForm.roleId,
           "schoolId": this.registerForm.schoolId,
-          "sex": this.registerForm.sex,
+          // "sex": this.registerForm.sex,
           "collegeId": this.registerForm.collegeId,
-          "number": this.registerForm.number
+          // "number": this.registerForm.number
         }).then(resp => {
           _this.loading = false;
           switch (resp.data.status) {
@@ -297,6 +298,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
               break
           }
         })
+        this.loading = false
       },
       onModifyPassword: function () {
         let _this = this

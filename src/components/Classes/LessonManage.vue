@@ -85,10 +85,17 @@
               size="mini"
               type="success"
               @click="getMembers(scope.$index, scope.row)">班课成员</el-button>
-          <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除班课</el-button>
+          <el-popconfirm
+              class="buttons"
+            title="确定删除此班课？"
+            @confirm="handleDelete(scope.$index, scope.row)"
+          >
+            <el-button
+                size="mini"
+                slot="reference"
+                type="danger">删除班课</el-button>
+          </el-popconfirm>
+
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +105,7 @@
         :visible.sync="showMembers"
         direction="rtl"
         size="50%">
-      <el-table :data="MembersData" style="margin: 20px;margin-right: 20px">
+      <el-table :data="MembersData" style="margin: 20px;margin-right: 20px" max-height="800px">
         <el-table-column property="id" label="ID" width="50px"></el-table-column>
         <el-table-column property="username" label="姓名" width="150px"></el-table-column>
         <el-table-column property="experiment" label="经验值" max-width="200px"></el-table-column>
@@ -251,11 +258,9 @@ export default {
       let _this = this
       getRequest('/courses/members/' + row.id, {
       }).then(resp => {
-        if (resp.data.status == 200) {
           _this.MembersData = resp.data.data
           _this.showMembers = true
-          console.log('members', _this.MembersData)
-        }
+          // console.log('members', _this.MembersData)
       })
     }
   },
@@ -279,7 +284,7 @@ export default {
   margin-bottom: 30px;
 }
 .buttons {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 </style>
 

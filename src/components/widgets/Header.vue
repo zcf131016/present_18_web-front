@@ -1,7 +1,7 @@
 <template>
   <div class=" header">
     <div class="logo">
-      <img style="height: 50px;width:250px" src="../assets/finallogo.png" />
+      <img style="height: 50px;width:250px" src="../../assets/finallogo.png" />
     </div>
     <div class="header-right">
       <div class="user-notice">
