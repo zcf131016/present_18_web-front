@@ -23,11 +23,11 @@
 
 <script>
 // @ is an alias to /src
-import ySidebar from "@/components/widgets/Sidebar";
-import yHeader from "@/components/widgets/Header";
-import BreadCrumb from "@/components/widgets/BreadCrumb";
+import ySidebar from "@/components/layout/Sidebar";
+import yHeader from "@/components/layout/Header";
+import BreadCrumb from "@/components/layout/BreadCrumb";
 import UserInfo from "@/components/UserInfo";
-import Tag from "@/components/widgets/Tags";
+import Tag from "@/components/layout/Tags";
 import Copyright from "@/components/widgets/Copyright";
 
 export default {

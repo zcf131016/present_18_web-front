@@ -8,7 +8,7 @@
 
 <script>
 import {comments} from '@/components/widgets/comment/mock/mockdata'
-import Comment from './widgets/comment/Comment'
+import Comment from '../widgets/comment/Comment'
 export default {
   name: "ManageBoard",
   components: {

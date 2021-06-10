@@ -414,6 +414,7 @@ export default {
           sort: i,
         }).then(resp=>{
           _this.$message(resp.data.msg)
+          _this.refreshDictDetail(this.currentSelected)
         })
       }
     },
@@ -500,6 +501,7 @@ export default {
       console.log('当前code',_this.currentSelected)
       getRequest('/dict/' + currentRow.code + '/detail', {}).then(resp => {
         console.log(resp.data.data)
+        resp.data.data.sort(function(a,b) { return a.sort - b.sort})
         _this.DictDetail = resp.data.data
         console.log("字典详情",_this.DictDetail)
         _this.loading = false
@@ -509,7 +511,7 @@ export default {
       let _this = this
       console.log('当前的code',current)
       getRequest('/dict/' + current + '/detail',{}).then(resp => {
-        _this.DictDetail = resp.data.data
+        _this.DictDetail = resp.data.data.sort(function (a,b) {return a.sort - b.sort})
       })
     },
     toggleSelection(rows) {

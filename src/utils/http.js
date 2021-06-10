@@ -35,7 +35,7 @@ service.interceptors.response.use(
     response => {
         // 刷新access-token
         if( response.data.token ) {
-            localStorage.setItem('access_token',response.data.token)
+            window.localStorage.setItem('access_token',response.data.token)
         }
         if(response.status == 200) {
             switch (response.data.status) {
@@ -54,7 +54,7 @@ service.interceptors.response.use(
                         path: '/login'
                     }).then(r => {
                         // 删除旧的token
-                        localStorage.removeItem('access_token')
+                        window.localStorage.removeItem('access_token')
                         alert(response.data.msg)
                     })
                     break
@@ -66,7 +66,6 @@ service.interceptors.response.use(
                     }).then(r => {
                     })
                     break
-
             }
         } else {
             alert('服务器未响应！')

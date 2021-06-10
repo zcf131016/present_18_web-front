@@ -2,21 +2,21 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
-import TeacherManage from "@/components/TeacherManage";
-import StudentManage from "@/components/StudentManage";
-import ManageBoard from "@/components/ManageBoard";
-import RoleManage from "@/components/RoleManage";
-import DataDictionary from "@/components/DataDictionary";
-import LessonManage from "@/components/Classes/LessonManage";
+import TeacherManage from "@/components/page/TeacherManage";
+import StudentManage from "@/components/page/StudentManage";
+import ManageBoard from "@/components/page/ManageBoard";
+import RoleManage from "@/components/page/RoleManage";
+import DataDictionary from "@/components/page/DataDictionary";
+import LessonManage from "@/components/page/LessonManage";
 import UserManage from "@/components/UserManage";
 import HelloWorld from "@/components/HelloWorld";
 import BaseTable from "@/components/base/BaseTable";
 import Others from "@/components/Others";
 import BaseForm from "@/components/base/BaseForm";
 import ErrorPage from "@/views/ErrorPage";
-import MenuManage from "@/components/MenuManage";
-import SysParaManage from "@/components/SysParaManage";
-import signManage from "@/components/signManage";
+import MenuManage from "@/components/page/MenuManage";
+import SysParaManage from "@/components/page/SysParaManage";
+import signManage from "@/components/page/signManage";
 import UsersManage from "@/components/UsersManage";
 
 Vue.use(VueRouter)

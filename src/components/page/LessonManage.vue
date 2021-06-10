@@ -73,14 +73,18 @@
           prop="isAllow"
           label="允许加入"
       >
+        <template slot-scope="scope">
+          <el-switch
+              v-model="scope.row.isAllow"
+              @change="handleForbidden(scope.$index, scope.row)"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+          </el-switch>
+        </template>
       </el-table-column>
 
       <el-table-column label="操作"  fixed="right" width="300px">
         <template slot-scope="scope">
-          <el-button
-              size="mini"
-              :type="scope.row.isAllow ? 'success' : 'warning'"
-              @click="handleForbidden(scope.$index, scope.row)">{{scope.row.isAllow ? '允许加入' : '禁止加入'}}</el-button>
           <el-button
               size="mini"
               type="success"
