@@ -1,31 +1,23 @@
 <template>
   <div>
-    <el-card class="box-card">
-      <div class="group">到云项目组第18组</div>
-      <el-row>
-        <el-col :span="4" v-for="(o, index) in group" :key="index" :offset="index > 0 ? 2 : 0">
-          <el-card :body-style="{ padding: '0px' }">
-            <img :src="o.avatar" class="image">
-            <div style="padding: 14px;">
-              <h1>{{o.name}}</h1>
-              <div class="bottom clearfix">
-                <time class="time">学号 {{ o.sid }}</time>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
+    <el-card>
+      <Comment :comments="commentData"></Comment>
     </el-card>
   </div>
 </template>
 
 <script>
+import {comments} from '@/components/widgets/comment/mock/mockdata'
+import Comment from './widgets/comment/Comment'
 export default {
   name: "ManageBoard",
-  components: {},
+  components: {
+    Comment
+  },
   data() {
     return {
       currentDate: new Date(),
+      commentData: [],
       group: [
         {
           name: '林宇航',
@@ -53,6 +45,9 @@ export default {
         }
       ]
     }
+  },
+  created() {
+    this.commentData = comments.data
   }
 }
 </script>

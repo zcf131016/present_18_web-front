@@ -28,9 +28,13 @@
     <el-divider></el-divider>
     <el-table
         ref="multipleTable"
+        height="600px"
         :data="tableData"
         tooltip-effect="dark"
-        style="width: 100%"
+        highlight-current-row
+        row-key="id"
+        style="width: 100%;"
+        :tree-props="{children: 'children'}"
         @selection-change="handleSelectionChange">
       <el-table-column
           type="selection"
@@ -38,47 +42,47 @@
       </el-table-column>
       <el-table-column
           prop="id"
-          label="用户ID"
-          width="80px"
+          label="菜单ID"
+          width="150px"
       >
         <!--        <template slot-scope="scope">{{ scope.row.uid }}</template>-->
       </el-table-column>
       <el-table-column
-          prop="username"
-          label="用户名"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="email"
-          label="邮箱"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="phone"
-          label="手机号"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="roleId"
-          label="角色"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="enable"
-          label="状态"
-          show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
-          prop="lastLoginTime"
-          label="最近登录"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="createTime"
-          label="创建时间"
+          prop="name"
+          label="菜单名"
       >
       </el-table-column>
 
+      <el-table-column
+          prop="icon"
+          label="图标"
+      >
+        <template slot-scope="scope">
+          <i :class="scope.row.icon"></i>
+        </template>
+      </el-table-column>
+      <el-table-column
+          prop="path"
+          label="路径"
+      >
+      </el-table-column>
+      <el-table-column
+          prop="component"
+          label="组件"
+      >
+      </el-table-column>
+      <el-table-column
+          prop="hidden"
+          label="隐藏"
+          show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-switch
+              v-model="scope.row.hidden"
+              active-color="#ff4949"
+              inactive-color="#13ce66">
+          </el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-popconfirm
@@ -169,33 +173,12 @@ export default {
     }
   },
   methods: {
-    getUsers() {
+    getMenus() {
       let _this = this
       _this.loading = true
-      getRequest('/users',{
-        pageNum: _this.currentPage,
-        pageSize: _this.pageSize
-      }).then(resp => {
-        _this.tableData = resp.data.data.list
+      getRequest('/menus/role/' + 1).then(resp => {
+        _this.tableData = resp.data.data
         _this.total = resp.data.data.total
-        for(let i = 0;i < _this.tableData.length;i++) {
-          _this.tableData[i].enable = _this.tableData[i] ? '可用' : '禁用'
-          _this.tableData[i].phone = _this.tableData[i].phone == null ? '未绑定' : _this.tableData[i].phone
-          _this.tableData[i].email = _this.tableData[i].email == null ? '未绑定' : _this.tableData[i].email
-          _this.tableData[i].lastLoginTime = _this.tableData[i].lastLoginTime == null ? '无登录记录' : _this.tableData[i].lastLoginTime
-          let role_id = _this.tableData[i].roleId
-          switch (role_id) {
-            case 1:
-              _this.tableData[i].roleId = '管理员'
-              break
-            case 2:
-              _this.tableData[i].roleId = '教师'
-              break
-            case 3:
-              _this.tableData[i].roleId = '学生'
-              break
-          }
-        }
         console.log('hello', resp.data.data)
       })
     },
@@ -224,7 +207,7 @@ export default {
       deleteRequest('/users/' + row.id, {}).then(resp => {
         if(resp.data.status == 200) {
           _this.$message(resp.data.msg)
-          _this.getUsers()
+          _this.getMenus()
         }
       })
     },
@@ -237,11 +220,11 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.currentPage = val
-      this.getUsers()
+      this.getMenus()
     }
   },
-  mounted() {
-    this.getUsers()
+  created() {
+    this.getMenus()
   }
 }
 </script>

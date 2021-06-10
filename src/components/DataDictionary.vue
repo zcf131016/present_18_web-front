@@ -260,7 +260,7 @@
         <el-form-item label="编码" :label-width="formLabelWidth" prop="code">
           <el-input v-model="DictDetailForm.code" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="值" :label-width="formLabelWidth">
+        <el-form-item label="值" :label-width="formLabelWidth" prop="value">
           <el-input v-model="DictDetailForm.value" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="是否默认" :label-width="formLabelWidth">
@@ -332,6 +332,24 @@ import Sortable from 'sortablejs'
 export default {
   name: "DataDictionary",
   data() {
+    // 自定义关键字验证
+    let checkValue = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('数值不能为空'));
+      } else {
+        let ok = true
+        for(let item of this.DictDetail) {
+          if (item.value == value) {
+            ok = false
+          }
+        }
+        if (ok) {
+          callback();
+        } else {
+          return callback(new Error('数值重复'))
+        }
+      }
+    };
     return {
       pageSize: 9,
       currentPage: 1,
@@ -350,7 +368,7 @@ export default {
           { required: true, message: '请输入权限', trigger: 'blur' }
         ],
         code: [{required: true, message: '请输入编码', trigger: 'blur'}],
-        value: [{required: true, message: '请输入编码', trigger: 'blur'}],
+        value: [{validator: checkValue, trigger: 'blur'}],
       },
       formLabelWidth: '120px',
       dialogFormVisible: false,

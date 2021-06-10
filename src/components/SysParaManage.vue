@@ -91,7 +91,7 @@
           <el-input v-model="SysParamForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="键" :label-width="formLabelWidth" prop="key">
-          <el-input v-model="SysParamForm.key" autocomplete="off" readonly></el-input>
+          <el-input v-model="SysParamForm.key" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="值" :label-width="formLabelWidth" prop="value">
           <el-input v-model="SysParamForm.value" autocomplete="off"></el-input>
