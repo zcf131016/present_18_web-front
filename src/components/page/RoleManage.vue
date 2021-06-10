@@ -107,7 +107,7 @@
             highlight-current
             node-key="id"
             :default-expanded-keys="[2, 3]"
-            :default-checked-keys="this.AssignedMenu"
+            :default-checked-keys="AssignedMenu"
             :props="defaultProps">
         </el-tree>
       </el-card>
