@@ -37,34 +37,39 @@ service.interceptors.response.use(
         if( response.data.token ) {
             localStorage.setItem('access_token',response.data.token)
         }
-        switch (response.data.status) {
-            // 401 权限不足
-            case 401:
-                router.replace({
-                    path: '/login'
-                }).then(r => {
-                    alert(response.data.msg)
-                })
-                break
+        if(response.status == 200) {
+            switch (response.data.status) {
+                // 401 权限不足
+                case 401:
+                    router.replace({
+                        path: '/login'
+                    }).then(r => {
+                        alert(response.data.msg)
+                    })
+                    break
 
-            // 403 登录过期
-            case 403:
-                router.replace({
-                    path: '/login'
-                }).then(r => {
-                    // 删除旧的token
-                    localStorage.removeItem('access_token')
-                    alert(response.data.msg)
-                })
-                break
+                // 403 登录过期
+                case 403:
+                    router.replace({
+                        path: '/login'
+                    }).then(r => {
+                        // 删除旧的token
+                        localStorage.removeItem('access_token')
+                        alert(response.data.msg)
+                    })
+                    break
 
-            // 404 页面不存在
-            case 404:
-                router.replace({
-                    path: '/404'
-                }).then(r => {})
-                break
+                // 404 页面不存在
+                case 404:
+                    router.replace({
+                        path: '/404'
+                    }).then(r => {
+                    })
+                    break
 
+            }
+        } else {
+            alert('服务器未响应！')
         }
         return response
     },

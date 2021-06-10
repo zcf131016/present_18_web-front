@@ -7,16 +7,17 @@ import StudentManage from "@/components/StudentManage";
 import ManageBoard from "@/components/ManageBoard";
 import RoleManage from "@/components/RoleManage";
 import DataDictionary from "@/components/DataDictionary";
-import LessonManage from "@/components/LessonManage";
+import LessonManage from "@/components/Classes/LessonManage";
 import UserManage from "@/components/UserManage";
 import HelloWorld from "@/components/HelloWorld";
-import BaseTable from "@/components/BaseTable";
+import BaseTable from "@/components/base/BaseTable";
 import Others from "@/components/Others";
-import BaseForm from "@/components/BaseForm";
+import BaseForm from "@/components/base/BaseForm";
 import ErrorPage from "@/views/ErrorPage";
 import MenuManage from "@/components/MenuManage";
 import SysParaManage from "@/components/SysParaManage";
 import signManage from "@/components/signManage";
+import UsersManage from "@/components/UsersManage";
 
 Vue.use(VueRouter)
 
@@ -102,6 +103,16 @@ const routes = [
           title: '用户管理'
         },
         children: [
+          {
+            path: '/usersManage',
+            name: '用户管理',
+            component: UsersManage,
+            meta: {
+              keepAlive: true,
+              requireAuth: true,
+              title: '用户管理'
+            }
+          },
           {
             path: '/studentManage',
             name: '学生管理',

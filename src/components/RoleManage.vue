@@ -37,6 +37,7 @@
         <el-table
             ref="multipleTable"
             highlight-current-row
+            @current-change="getRoleMenu"
             style="width: 100%;"
             :data="TableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
             @selection-change="handleSelectionChange"
@@ -45,7 +46,7 @@
           <el-table-column prop="id" label="ID" />
           <el-table-column prop="name" label="名称" />
           <el-table-column :show-overflow-tooltip="true" prop="remark" label="描述" />
-          <el-table-column :show-overflow-tooltip="true" width="135px" prop="create_time" label="创建日期" />
+<!--          <el-table-column :show-overflow-tooltip="true" width="135px" prop="create_time" label="创建日期" />-->
           <el-table-column label="操作" width="200px" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button
@@ -102,10 +103,11 @@
             :data="menus"
             ref="menuTree"
             show-checkbox
+            check-strictly
             highlight-current
             node-key="id"
             :default-expanded-keys="[2, 3]"
-            :default-checked-keys="AssignedMenu"
+            :default-checked-keys="this.AssignedMenu"
             :props="defaultProps">
         </el-tree>
       </el-card>
@@ -164,6 +166,7 @@ export default {
       currentPage: 1,
       multipleSelection: [],
       AssignedMenu: [],
+      currentRoleId: 0,
       query: '',
       select: '',
       rules: {
@@ -195,6 +198,24 @@ export default {
     }
   },
   methods: {
+    getRoleMenu(val) {
+      let _this = this
+      _this.loading = true
+      this.AssignedMenu = []
+      _this.currentRoleId = val.id
+      getRequest('/menus/role/' + val.id, {}).then(resp => {
+        let menus = resp.data.data
+        for (let i = 0;i < menus.length;i++) {
+          _this.AssignedMenu.push(menus[i].id)
+          for(let j = 0;j < menus[i].children.length;j++){
+            _this.AssignedMenu.push(menus[i].children[j].id)
+          }
+        }
+        _this.$refs.menuTree.setCheckedKeys([])
+        _this.$refs.menuTree.setCheckedKeys(_this.AssignedMenu)
+        _this.loading = false
+      })
+    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -213,7 +234,7 @@ export default {
         if (resp.data.status == 200) {
           _this.TableData = resp.data.data
         } else {
-          _this.$alert(resp.data.msg)
+          _this.$message(resp.data.msg)
         }
       })
     },
@@ -223,16 +244,23 @@ export default {
     },
     menuChange() {},
     saveMenu() {
+      let _this = this
       let selectedMenu = this.$refs.menuTree.getHalfCheckedKeys().concat(this.$refs.menuTree.getCheckedKeys())
       console.log('当前菜单',selectedMenu)
+      console.log('当前角色',_this.currentRoleId)
       // 提交菜单分配
-      postRequest('',{}).then(resp => {
-
-      })
+      for(let id of selectedMenu)
+      {
+        postRequest('/menus/role',{
+          roleId: _this.currentRoleId,
+          menuId: id
+        }).then(resp => {
+            _this.$message(resp.data.msg)
+        })
+      }
     },
     getMenu: function () {
       this.menus = this.$store.state.menus
-      console.log('menus from store:',this.menus)
     },
     handleEdit: function (index, row){
       this.dialogFormVisible = true

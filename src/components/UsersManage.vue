@@ -1,6 +1,6 @@
 <template>
   <div class="base-table">
-    <div style="margin-top: 20px;display: flex;margin-bottom: 20px">
+    <div style="width: 100%;height: 60px;padding: 0px;padding-left: 0;margin-top: 0;background: #FAFAFA;display: flex;margin-bottom: 20px;position: fixed;z-index: 2">
       <div class="buttons">
         <el-button @click="toggleSelection()" type="warning">取消选择</el-button>
       </div>
@@ -25,12 +25,13 @@
         </el-input>
       </div>
     </div>
-    <el-divider></el-divider>
+    <el-divide></el-divide>
     <el-table
         ref="multipleTable"
+        max-height="800px"
         :data="tableData"
         tooltip-effect="dark"
-        style="width: 100%"
+        style="width: 100%;margin-top: 80px"
         @selection-change="handleSelectionChange">
       <el-table-column
           type="selection"
@@ -41,7 +42,7 @@
           label="用户ID"
           width="80px"
       >
-        <!--        <template slot-scope="scope">{{ scope.row.uid }}</template>-->
+<!--        <template slot-scope="scope">{{ scope.row.uid }}</template>-->
       </el-table-column>
       <el-table-column
           prop="username"
@@ -83,13 +84,13 @@
         <template slot-scope="scope">
           <el-popconfirm
               class="buttons"
-              @confirm="handleForbidden(scope.$index, scope.row)"
-              title="确定禁用该用户？"
+            @confirm="handleForbidden(scope.$index, scope.row)"
+            title="确定禁用该用户？"
           >
             <el-button
                 size="mini"
                 slot="reference"
-            >{{scope.row.enable ? '禁用' : '解禁'}}</el-button>
+                >{{scope.row.enable ? '禁用' : '解禁'}}</el-button>
           </el-popconfirm>
           <el-popconfirm
               class="buttons"
@@ -115,7 +116,7 @@
           :current-page.sync="currentPage"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
-          :total="this.tableData.length">
+          :total="this.total">
       </el-pagination>
     </div>
     <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
@@ -149,7 +150,7 @@
 import {deleteRequest, getRequest} from "@/utils/api";
 
 export default {
-  name: "TeacherManage",
+  name: "UsersManage",
   data() {
     return {
       pageSize: 10,
@@ -173,10 +174,10 @@ export default {
       let _this = this
       _this.loading = true
       getRequest('/users',{
-        // pageNum: _this.currentPage,
-        // pageSize: _this.pageSize
+        pageNum: _this.currentPage,
+        pageSize: _this.pageSize
       }).then(resp => {
-        _this.tableData = resp.data.data.list.filter(function (item) {return item.roleId=='2'})
+        _this.tableData = resp.data.data.list
         _this.total = resp.data.data.total
         for(let i = 0;i < _this.tableData.length;i++) {
           _this.tableData[i].enable = _this.tableData[i] ? '可用' : '禁用'
@@ -221,6 +222,7 @@ export default {
     },
     handleDelete(index, row){
       let _this = this
+      console.log('准备删除')
       deleteRequest('/users/' + row.id, {}).then(resp => {
         if(resp.data.status == 200) {
           _this.$message(resp.data.msg)

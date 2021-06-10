@@ -114,8 +114,10 @@ export default {
 .tags {
   position: relative;
   height: 40px;
+  width: 100%;
   overflow: hidden;
   padding-right: 120px;
+  box-sizing: border-box;
 }
 
 .tags ul {
@@ -149,6 +151,8 @@ export default {
   text-overflow: ellipsis;
   margin-right: 5px;
   color: #666;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .tags-li.active .tags-li-title {

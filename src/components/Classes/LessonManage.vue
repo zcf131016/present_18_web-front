@@ -38,76 +38,93 @@
       </el-table-column>
       <el-table-column
           prop="id"
-          label="用户ID"
+          label="班课ID"
           width="80px"
       >
-        <!--        <template slot-scope="scope">{{ scope.row.uid }}</template>-->
+<!--                <template slot-scope="scope">{{ scope.row.uid }}</template>-->
       </el-table-column>
       <el-table-column
-          prop="username"
-          label="用户名"
+          prop="name"
+          label="班课名"
       >
       </el-table-column>
       <el-table-column
-          prop="email"
-          label="邮箱"
+          prop="number"
+          label="班课号"
       >
       </el-table-column>
       <el-table-column
-          prop="phone"
-          label="手机号"
+          prop="classroom"
+          label="教室"
       >
       </el-table-column>
       <el-table-column
-          prop="roleId"
-          label="角色"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="enable"
-          label="状态"
-          show-overflow-tooltip>
-      </el-table-column>
-      <el-table-column
-          prop="lastLoginTime"
-          label="最近登录"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="createTime"
-          label="创建时间"
+          prop="semester"
+          label="学期"
       >
       </el-table-column>
 
-      <el-table-column label="操作">
+      <el-table-column
+          prop="teacherName"
+          label="任课教师"
+      >
+      </el-table-column>
+      <el-table-column
+          prop="isAllow"
+          label="允许加入"
+      >
+      </el-table-column>
+
+      <el-table-column label="操作"  fixed="right" width="300px">
         <template slot-scope="scope">
+          <el-button
+              size="mini"
+              :type="scope.row.isAllow ? 'success' : 'warning'"
+              @click="handleForbidden(scope.$index, scope.row)">{{scope.row.isAllow ? '允许加入' : '禁止加入'}}</el-button>
+          <el-button
+              size="mini"
+              type="success"
+              @click="getMembers(scope.$index, scope.row)">班课成员</el-button>
           <el-popconfirm
               class="buttons"
-              @confirm="handleForbidden(scope.$index, scope.row)"
-              title="确定禁用该用户？"
+            title="确定删除此班课？"
+            @confirm="handleDelete(scope.$index, scope.row)"
           >
             <el-button
                 size="mini"
                 slot="reference"
-            >{{scope.row.enable ? '禁用' : '解禁'}}</el-button>
+                type="danger">删除班课</el-button>
           </el-popconfirm>
-          <el-popconfirm
-              class="buttons"
-              @confirm="handleDelete(scope.$index, scope.row)"
-              confirmButtonText='好的'
-              cancelButtonText='不用了'
-              icon="el-icon-info"
-              iconColor="red"
-              title="确定删除该用户？"
-          >
-            <el-button
-                size="mini"
-                type="danger"
-                slot="reference">删除</el-button>
-          </el-popconfirm>
+
         </template>
       </el-table-column>
     </el-table>
+<!--    班课成员信息-->
+    <el-drawer
+        title="班课成员"
+        :visible.sync="showMembers"
+        direction="rtl"
+        size="50%">
+      <el-table :data="MembersData" style="margin: 20px;margin-right: 20px" max-height="800px">
+        <el-table-column property="id" label="ID" width="50px"></el-table-column>
+        <el-table-column property="username" label="姓名" width="150px"></el-table-column>
+        <el-table-column property="experiment" label="经验值" max-width="200px"></el-table-column>
+        <el-table-column label="操作" width="300px">
+          <template slot-scope="scope">
+            <el-button
+                size="mini"
+                type="success"
+                @click="handleModify(scope.$index, scope.row)">修改经验值</el-button>
+            <el-button
+                size="mini"
+                type="danger"
+                @click="handleOut(scope.$index, scope.row)">移出班课</el-button>
+          </template>
+        </el-table-column>
+
+      </el-table>
+    </el-drawer>
+<!--    班课成员信息结束-->
     <div class="block">
       <el-pagination
           @size-change="handleSizeChange"
@@ -115,88 +132,67 @@
           :current-page.sync="currentPage"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
-          :total="this.tableData.length">
+          :total="this.total">
       </el-pagination>
     </div>
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
-      <el-form :model="UserForm">
-        <el-form-item label="用户名" label-width="120px">
-          <el-input v-model="UserForm.username" autocomplete="off"></el-input>
+    <el-dialog title="添加班课" :visible.sync="dialogFormVisible">
+      <el-form :model="ClassForm">
+        <el-form-item label="班课名" label-width="120px">
+          <el-input v-model="ClassForm.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="手机号" label-width="120px">
-          <el-input v-model="UserForm.phone" autocomplete="off"></el-input>
+        <el-form-item label="教室" label-width="120px">
+          <el-input v-model="ClassForm.classroom" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" label-width="120px">
-          <el-input v-model="UserForm.email" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="角色" label-width="120px" style="float: left">
-          <el-select v-model.number="UserForm.roleId" placeholder="请选择用户角色">
-            <el-option label="管理员" value="1"></el-option>
-            <el-option label="教师" value="2"></el-option>
-            <el-option label="学生" value="3"></el-option>
-          </el-select>
+        <el-form-item label="学期" label-width="120px">
+          <el-input v-model="ClassForm.semester" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUser">确 定</el-button>
+        <el-button type="primary" @click="addCourses">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {deleteRequest, getRequest} from "@/utils/api";
+import {deleteRequest, getRequest, postRequest} from "@/utils/api";
 
 export default {
-  name: "TeacherManage",
+  name: "LessonManage",
   data() {
     return {
       pageSize: 10,
       currentPage: 1,
       select: '学号',
       tableData: [],
+      MembersData: [],
       total: 0,
       multipleSelection: [],
       dialogFormVisible: false,
+      showMembers: false,
       search: '',
-      UserForm: {
+      ClassForm: {
+        name: '',
+        semester: '',
+        classroom: ''
+      },
+      student: {
         username: '',
-        email: '',
-        phone: '',
-        roleId: 2
+
       }
     }
   },
   methods: {
-    getUsers() {
+    getCourses() {
       let _this = this
       _this.loading = true
-      getRequest('/users',{
-        // pageNum: _this.currentPage,
-        // pageSize: _this.pageSize
+      getRequest('/courses/type/' + '1',{
+        pageNum: _this.currentPage,
+        pageSize: _this.pageSize
       }).then(resp => {
-        _this.tableData = resp.data.data.list.filter(function (item) {return item.roleId=='2'})
-        _this.total = resp.data.data.total
-        for(let i = 0;i < _this.tableData.length;i++) {
-          _this.tableData[i].enable = _this.tableData[i] ? '可用' : '禁用'
-          _this.tableData[i].phone = _this.tableData[i].phone == null ? '未绑定' : _this.tableData[i].phone
-          _this.tableData[i].email = _this.tableData[i].email == null ? '未绑定' : _this.tableData[i].email
-          _this.tableData[i].lastLoginTime = _this.tableData[i].lastLoginTime == null ? '无登录记录' : _this.tableData[i].lastLoginTime
-          let role_id = _this.tableData[i].roleId
-          switch (role_id) {
-            case 1:
-              _this.tableData[i].roleId = '管理员'
-              break
-            case 2:
-              _this.tableData[i].roleId = '教师'
-              break
-            case 3:
-              _this.tableData[i].roleId = '学生'
-              break
-          }
-        }
-        console.log('hello', resp.data.data)
+        _this.tableData = resp.data.data
+        console.log('courses', resp.data.data)
       })
     },
     toggleSelection(rows) {
@@ -211,20 +207,39 @@ export default {
     deleteSelected() {
 
     },
-    addUser () {
-      // 添加用户
+    handleOut (index, row) {
+
+    },
+    handleModify (index, row) {
+
+    },
+    addCourses () {
+      // 创建班课
       this.dialogFormVisible = false
       let _this = this
+      postRequest('/courses',{
+        classroom: _this.ClassForm.classroom,
+        name: _this.ClassForm.name,
+        semester: _this.ClassForm.semester
+      }).then(resp => {
+        if(resp.data.status == 200) {
+          this.$message(resp.data.msg)
+          _this.getCourses()
+        }
+      })
     },
     handleForbidden(index, row) {
 
     },
+    handleMember(index, row) {
+
+    },
     handleDelete(index, row){
       let _this = this
-      deleteRequest('/users/' + row.id, {}).then(resp => {
+      deleteRequest('/courses/' + row.id, {}).then(resp => {
         if(resp.data.status == 200) {
           _this.$message(resp.data.msg)
-          _this.getUsers()
+          _this.getCourses()
         }
       })
     },
@@ -237,11 +252,20 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.currentPage = val
-      this.getUsers()
+      this.getCourses()
+    },
+    getMembers (index, row) {
+      let _this = this
+      getRequest('/courses/members/' + row.id, {
+      }).then(resp => {
+          _this.MembersData = resp.data.data
+          _this.showMembers = true
+          // console.log('members', _this.MembersData)
+      })
     }
   },
   mounted() {
-    this.getUsers()
+    this.getCourses()
   }
 }
 </script>
@@ -250,7 +274,6 @@ export default {
 .base-table {
   position: relative;
   padding: 10px;
-  padding-bottom: 10px;
   height: 100%;
   /*top: 10px;*/
 }
