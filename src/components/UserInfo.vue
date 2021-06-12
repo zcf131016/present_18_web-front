@@ -101,6 +101,10 @@
             <div class="user-avatar">
               <img v-if="userInfo.avatar!=null" :src="userInfo.avatar" alt="" class="avatar">
               <img v-if="userInfo.avatar==null" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt="" class="avatar">
+              <div class="user-edit">
+                <el-button type="primary" size="small" plain round>更换头像</el-button>
+                <el-button type="primary" size="small" plain round @click="innerDrawer = true; UserForm = userInfo">修改信息</el-button>
+              </div>
             </div>
             <div class="profile-box">
               <div class="info-item">
@@ -136,8 +140,55 @@
                 <label class="info-label">所在的院系</label>
                 <span title="">{{userInfo.college}}</span>
               </div>
+
             </div>
           </div>
+          <el-dialog
+              title="编辑用户信息"
+              append-to-body
+              width="500px"
+              :visible.sync="innerDrawer"
+              center>
+            <el-form :model="UserForm" :rules="rules">
+              <el-form-item label="用户名" label-width="60px" prop="username">
+                <el-input v-model="UserForm.username" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="昵称" label-width="60px">
+                <el-input v-model="UserForm.nickname" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="手机号" label-width="60px" prop="phone">
+                <el-input v-model="UserForm.phone" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="邮箱" label-width="60px">
+                <el-input v-model="UserForm.email" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="学号" label-width="60px">
+                <el-input v-model="UserForm.number" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="学校" label-width="40px" style="width: 100%">
+                <el-select v-model.number="UserForm.schoolId" placeholder="学校" @change="getColleges(UserForm.schoolId)" style="width: 160px">
+                  <el-option
+                      v-for="item in universities"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                  </el-option>
+                </el-select>
+                <el-select v-model.number="UserForm.collegeId" placeholder="学院" style="margin-left: 5px">
+                  <el-option
+                      v-for="item in colleges"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="innerDrawer = false">取 消</el-button>
+              <el-button type="primary" @click="editUser">确 定</el-button>
+            </div>
+          </el-dialog>
         </el-tab-pane>
         <el-tab-pane label="账户安全" name="third">
           <div class="relation-type-box">
@@ -197,12 +248,21 @@
 </template>
 
 <script>
+import {getRequest, putRequest} from "@/utils/api";
+
 export default {
   name: "UserInfo",
   data() {
     return {
+      rules: {
+        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        phone: [{required: true, message: '请输入手机号', trigger: 'blur'}]
+      },
       activeName: 'first',
       tabPosition: 'left',
+      innerDrawer: false,
+      universities: [],
+      colleges: [],
       userInfo: {
         realname: '',
         phone: '',
@@ -213,6 +273,16 @@ export default {
         role: '',
         number: '',
         avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+      },
+      UserForm: {
+        collegeId: 0,
+        enable: true,
+        id: 0,
+        nickname: "",
+        number: "",
+        schoolId: 0,
+        sex: "",
+        username: ""
       },
       relatedInfo: {
         class_info: '3',
@@ -225,6 +295,15 @@ export default {
     }
   },
   methods: {
+    editUser() {
+      let _this = this
+      putRequest('/users', _this.UserForm).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+      })
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -248,10 +327,41 @@ export default {
           break
       }
       console.log('user',this.userInfo)
-    }
+    },
+    getUniversity: function () {
+      let _this = this
+      getRequest('/universities',{
+        id: 1,
+        pageNum: 1,
+        pageSize: 500
+      }).then(resp => {
+        if (resp.status == 200) {
+          _this.universities = resp.data.data
+          console.log(_this.universities)
+        } else {
+          console.log('获取学校信息失败！')
+        }
+      })
+    },
+    getColleges: function (schoolId) {
+      let _this = this
+      getRequest('/universities/' + schoolId, {
+        id: schoolId,
+        pageNum: 1,
+        pageSize: 500
+      }).then( resp => {
+        if (resp.status == 200) {
+          _this.colleges = resp.data.data
+          console.log(_this.colleges)
+        } else {
+          console.log('获取学院信息失败!')
+        }
+      })
+    },
   },
   mounted() {
     this.getUserInfo()
+    this.getUniversity()
   },
   created() {
   },
@@ -269,6 +379,9 @@ export default {
 </script>
 
 <style scoped>
+.user-edit {
+  margin-top: 20px;
+}
 .user-info-form {
   display: flex;
   width: 100%;

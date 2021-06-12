@@ -17,9 +17,8 @@
       <div style="margin-left: 20px">
         <el-input placeholder="请输入内容" v-model="search" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="用户ID" value="1"></el-option>
-            <el-option label="用户名" value="2"></el-option>
-            <el-option label="用户电话" value="3"></el-option>
+            <el-option label="班课号" :value="1"></el-option>
+            <el-option label="班课名" :value="2"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
@@ -65,8 +64,8 @@
       </el-table-column>
 
       <el-table-column
-          prop="teacherName"
-          label="任课教师"
+          prop="teacherId"
+          label="任课教师ID"
       >
       </el-table-column>
       <el-table-column
@@ -160,7 +159,7 @@
 </template>
 
 <script>
-import {deleteRequest, getRequest, postRequest} from "@/utils/api";
+import {deleteRequest, getRequest, postRequest, putRequest} from "@/utils/api";
 
 export default {
   name: "LessonManage",
@@ -168,7 +167,7 @@ export default {
     return {
       pageSize: 10,
       currentPage: 1,
-      select: '学号',
+      select: 1,
       tableData: [],
       MembersData: [],
       total: 0,
@@ -188,6 +187,15 @@ export default {
     }
   },
   methods: {
+    getAllCourses() {
+      let _this = this
+      getRequest('/courses',{
+        pageNum: _this.currentPage,
+        pageSize: _this.pageSize
+      }).then(resp => {
+        _this.tableData = resp.data.data
+      })
+    },
     getCourses() {
       let _this = this
       _this.loading = true
@@ -228,12 +236,21 @@ export default {
       }).then(resp => {
         if(resp.data.status == 200) {
           this.$message(resp.data.msg)
-          _this.getCourses()
+          _this.getAllCourses()
         }
       })
     },
     handleForbidden(index, row) {
-
+      let _this = this
+      putRequest('/courses',{
+        id: row.id,
+        isAllow: row.isAllow
+      }).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+      })
     },
     handleMember(index, row) {
 
@@ -243,7 +260,7 @@ export default {
       deleteRequest('/courses/' + row.id, {}).then(resp => {
         if(resp.data.status == 200) {
           _this.$message(resp.data.msg)
-          _this.getCourses()
+          _this.getAllCourses()
         }
       })
     },
@@ -270,6 +287,7 @@ export default {
   },
   mounted() {
     this.getCourses()
+    this.getAllCourses()
   }
 }
 </script>

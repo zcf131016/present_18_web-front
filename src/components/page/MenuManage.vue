@@ -88,7 +88,7 @@
           <el-popconfirm
               class="buttons"
               @confirm="handleForbidden(scope.$index, scope.row)"
-              title="确定禁用该用户？"
+              title="确定禁用该菜单？"
           >
             <el-button
                 size="mini"

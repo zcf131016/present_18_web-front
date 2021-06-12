@@ -8,7 +8,7 @@ import ManageBoard from "@/components/page/ManageBoard";
 import RoleManage from "@/components/page/RoleManage";
 import DataDictionary from "@/components/page/DataDictionary";
 import LessonManage from "@/components/page/LessonManage";
-import UserManage from "@/components/UserManage";
+import UserManage from "@/components/page/UserManage";
 import HelloWorld from "@/components/HelloWorld";
 import BaseTable from "@/components/base/BaseTable";
 import Others from "@/components/Others";
@@ -17,7 +17,7 @@ import ErrorPage from "@/views/ErrorPage";
 import MenuManage from "@/components/page/MenuManage";
 import SysParaManage from "@/components/page/SysParaManage";
 import signManage from "@/components/page/signManage";
-import UsersManage from "@/components/UsersManage";
+import UsersManage from "@/components/page/UsersManage";
 
 Vue.use(VueRouter)
 

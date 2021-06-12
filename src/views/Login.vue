@@ -1,10 +1,13 @@
 <template>
   <body id="paper">
-    <div>
+    <div class="login-container">
+      <div>
+        <img src="../assets/login_logo.png" alt="logo" width="300px" height="auto">
+      </div>
         <!--  手机号+密码登录-->
-        <el-form v-if="this.mode==='login'" :model="loginForm" ref="loginForm" :rules="rules" class="login-container" label-position="left"
+        <el-form v-if="this.mode==='login'" :model="loginForm" ref="loginForm" :rules="rules"  label-position="left"
                 label-width="0px" v-loading="loading">
-            <h1 class="login_title">登录</h1>
+            <div class="login_title">登录</div>
             <el-form-item prop="phone">
             <el-input type="string" v-model="loginForm.phone" auto-complete="off" placeholder="手机号"></el-input>
             </el-form-item>
@@ -24,18 +27,18 @@
                 </el-col>
               </el-row>
             </el-form-item>
-            <el-checkbox class="login_remember" v-model="checked" label-position="left">记住密码</el-checkbox>
+<!--            <el-checkbox class="login_remember" v-model="checked" label-position="left">记住密码</el-checkbox>-->
             <el-form-item style="width: 100%">
-            <el-button type="info" @click.native.prevent="onLogin" style="width: 100%" :disabled="!verify">登录</el-button>
+            <el-button type="primary" @click.native.prevent="onLogin" style="width: 100%" :disabled="!verify">登录</el-button>
             </el-form-item>
           <div style="padding-bottom: 20px">
-            <el-link style="float: left" @click="onChangeMode('register')">注册账号</el-link>
+            <el-link style="float: left;padding-left: 5px" @click="onChangeMode('register')">注册账号</el-link>
             <el-link @click="onChangeMode('loginbyphone')">验证码登录</el-link>
-            <el-link style="float: right;" @click="onChangeMode('forgot')">忘记密码</el-link>
+            <el-link style="float: right;padding-right: 5px;" @click="onChangeMode('forgot')">忘记密码</el-link>
           </div>
         </el-form>
 <!--      手机验证码登录-->
-      <el-form v-else-if="this.mode==='loginbyphone'" :rules="rules" class="login-container" label-position="left"
+      <el-form v-else-if="this.mode==='loginbyphone'" :rules="rules" label-position="left"
                label-width="0px" v-loading="loading" :model="loginByPhoneForm" ref="loginByPhoneFrom">
         <h1 class="login_title">手机验证码登录</h1>
         <el-form-item prop="phone">
@@ -47,19 +50,19 @@
               <el-input type="string" v-model="loginByPhoneForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="8">
-              <el-button type="info" @click="getMsgCode(loginByPhoneForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
+              <el-button type="primary" @click="getMsgCode(loginByPhoneForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item style="width: 100%">
-          <el-button type="info" @click.native.prevent="onLoginByPhone" style="width: 100%">登录</el-button>
+          <el-button type="primary" @click.native.prevent="onLoginByPhone" style="width: 100%">登录</el-button>
         </el-form-item>
         <div>
           <el-link @click="onChangeMode('login')">账号密码登录</el-link>
         </div>
       </el-form>
 <!--      注册-->
-      <el-form v-else-if="this.mode==='register'" :rules="rules" class="login-container" label-position="left"
+      <el-form v-else-if="this.mode==='register'" :rules="rules" label-position="left"
                label-width="0px" v-loading="loading" :model="this.registerForm" ref="registerForm">
         <h1 class="login_title">注册</h1>
         <el-form-item prop="username">
@@ -80,12 +83,12 @@
               <el-input type="string" v-model="registerForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="8">
-              <el-button type="info" @click="getMsgCode(registerForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
+              <el-button type="primary" style="width: 100px" @click="getMsgCode(registerForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item label="学校" label-width="40px" style="width: 100%">
-          <el-select v-model.number="registerForm.schoolId" placeholder="学校" @change="getColleges(registerForm.schoolId)">
+          <el-select v-model.number="registerForm.schoolId" placeholder="学校" @change="getColleges(registerForm.schoolId)" style="width: 160px">
             <el-option
                 v-for="item in universities"
                 :key="item.id"
@@ -107,14 +110,14 @@
 <!--          <el-radio v-model="registerForm.sex" label="女">女</el-radio>-->
 <!--        </el-form-item>-->
         <el-form-item style="width: 100%">
-          <el-button type="info" @click.native.prevent="onRegister" style="width: 100%">注册</el-button>
+          <el-button type="primary" @click.native.prevent="onRegister" style="width: 100%">注册</el-button>
         </el-form-item>
         <div>
           <el-link @click="onChangeMode('login')">前往登录</el-link>
         </div>
       </el-form>
 <!--      忘记密码-->
-      <el-form v-else :rules="rules" class="login-container" label-position="left"
+      <el-form v-else :rules="rules" label-position="left"
                label-width="0px" v-loading="loading" :model="forgotForm" ref="forgotForm">
         <h1 class="login_title">修改密码</h1>
         <el-form-item prop="phone">
@@ -133,12 +136,12 @@
               <el-input type="string" v-model="forgotForm.smsCode" autocomplete="off" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="8">
-              <el-button type="info" @click="getMsgCode(forgotForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
+              <el-button type="primary" @click="getMsgCode(forgotForm.phone)" :disabled="!disabledCodeBtn">{{codeText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item style="width: 100%">
-          <el-button type="info" @click.native.prevent="onModifyPassword" style="width: 100%" :disabled="!checkPass">提交更改</el-button>
+          <el-button type="primary" @click.native.prevent="onModifyPassword" style="width: 100%" :disabled="!checkPass">提交更改</el-button>
         </el-form-item>
         <div>
           <el-link @click="onChangeMode('login')">前往登录</el-link>
@@ -315,20 +318,30 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
       },
       onLoginByPhone: function () {
         let _this = this
-        postRequest('/login/sms',{
-          phone: this.loginByPhoneForm.phone,
-          code: this.loginByPhoneForm.smsCode
-        }).then(resp => {
-          if (resp.data.status == 200) {
-            _this.$message(resp.data.msg)
-            _this.$store.commit('login', _this.loginForm) // 存储表单内容
-            localStorage.setItem('user_id', resp.data.id)
-            localStorage.setItem('access_token', resp.data.token)
-            _this.$router.replace({path: '/'});     // 跳转到首页
+        _this.$refs.loginByPhoneFrom.validate(valid => {
+          if(valid) {
+            postRequest('/login/sms',{
+              phone: this.loginByPhoneForm.phone,
+              code: this.loginByPhoneForm.smsCode
+            }).then(resp => {
+              if (resp.data.status == 200) {
+                _this.$message(resp.data.msg)
+                _this.$store.commit('login', _this.loginForm) // 存储表单内容
+                localStorage.setItem('user_id', resp.data.id)
+                localStorage.setItem('access_token', resp.data.token)
+                _this.$router.replace({path: '/'});     // 跳转到首页
+              } else {
+                _this.$message(resp.data.msg)
+              }
+            })
           } else {
-            _this.$message(resp.data.msg)
+            _this.$message({
+              type: 'error',
+              message: '表单验证未通过！'
+            })
           }
         })
+
       },
       // 这里使用定义的数据
       onLogin: function () { // 提交表单
@@ -352,9 +365,13 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
               _this.$router.replace({path: '/'});     // 跳转到首页
             } else {
               _this.$message(resp.data.msg)
+              localStorage.removeItem('access_token')
+              localStorage.removeItem('user_id')
             }
           } else {
             _this.$message(resp.data.msg)
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('user_id')
           }
         });
       },
@@ -440,7 +457,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
 </script>
 <style>
 #paper {
-  background:url("../assets/backimgwebp.webp") no-repeat;
+  background:url("../assets/sea.jpeg") no-repeat;
   background-position: center;
   height: 100%;
   width: 100%;
@@ -453,19 +470,35 @@ body {
 }
 
 .login-container {
+    float: right;
+    margin-top: 60px;
+    height: 80vh;
     border-radius: 15px;
     background-clip: padding-box;
-    margin: 180px auto;
+    margin-right: 60px;
     width: 350px;
-    padding: 35px 35px 15px 35px;
-    background-color: rgba(255,255,255,0.9);
+    padding: 60px 35px 15px 35px;
+    background-color: rgba(255,255,255,0.8);
   }
 
   .login_title {
-    margin: 0px auto 40px auto;
-    text-align: center;
-    color: #505458;
+    width: 98%;
+    height: 30px;
+    padding-left: 6px;
+    border-radius: 5px;
+    margin: 0;
+    background-color: rgba(255,255,255,0.8);
+    font-size: 16px;
+    line-height: 30px;
+    border-left: 2px solid #22B0EA;
+    margin: 0px auto 20px auto;
+    text-align: left;
+    color: #8c939d;
   }
+el-form {
+  margin-top: auto;
+  margin-bottom: auto;
+}
 
   .login_remember {
     margin: 0px 0px 35px 0px;
