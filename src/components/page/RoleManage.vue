@@ -249,15 +249,15 @@ export default {
       console.log('当前菜单',selectedMenu)
       console.log('当前角色',_this.currentRoleId)
       // 提交菜单分配
-      for(let id of selectedMenu)
-      {
-        postRequest('/menus/role',{
-          roleId: _this.currentRoleId,
-          menuId: id
-        }).then(resp => {
-            _this.$message(resp.data.msg)
+      postRequest('/roles/menu', {
+        menuIds: selectedMenu,
+        roleId: _this.currentRoleId
+      }).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
         })
-      }
+      })
     },
     getMenu: function () {
       this.menus = this.$store.state.menus

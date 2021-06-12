@@ -101,6 +101,10 @@
             <div class="user-avatar">
               <img v-if="userInfo.avatar!=null" :src="userInfo.avatar" alt="" class="avatar">
               <img v-if="userInfo.avatar==null" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt="" class="avatar">
+              <div class="user-edit">
+                <el-button type="primary" size="small" plain round>更换头像</el-button>
+                <el-button type="primary" size="small" plain round @click="innerDrawer = true">修改信息</el-button>
+              </div>
             </div>
             <div class="profile-box">
               <div class="info-item">
@@ -136,8 +140,37 @@
                 <label class="info-label">所在的院系</label>
                 <span title="">{{userInfo.college}}</span>
               </div>
+
             </div>
           </div>
+          <el-dialog
+              title="编辑用户信息"
+              append-to-body
+              width="500px"
+              :visible.sync="innerDrawer"
+              center>
+            <el-form :model="UserForm">
+              <el-form-item label="用户名" label-width="60px">
+                <el-input v-model="UserForm.username" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="昵称" label-width="60px">
+                <el-input v-model="UserForm.nickname" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="手机号" label-width="60px">
+                <el-input v-model="UserForm.phone" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="邮箱" label-width="60px">
+                <el-input v-model="UserForm.email" autocomplete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="学号" label-width="60px">
+                <el-input v-model="UserForm.number" autocomplete="off"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="innerDrawer = false">取 消</el-button>
+              <el-button type="primary" @click="editUser">确 定</el-button>
+            </div>
+          </el-dialog>
         </el-tab-pane>
         <el-tab-pane label="账户安全" name="third">
           <div class="relation-type-box">
@@ -203,6 +236,7 @@ export default {
     return {
       activeName: 'first',
       tabPosition: 'left',
+      innerDrawer: false,
       userInfo: {
         realname: '',
         phone: '',
@@ -213,6 +247,16 @@ export default {
         role: '',
         number: '',
         avatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+      },
+      UserForm: {
+        collegeId: 0,
+        enable: true,
+        id: 0,
+        nickname: "",
+        number: "",
+        schoolId: 0,
+        sex: "",
+        username: ""
       },
       relatedInfo: {
         class_info: '3',
@@ -225,6 +269,9 @@ export default {
     }
   },
   methods: {
+    editUser() {
+
+    },
     handleClick(tab, event) {
       console.log(tab, event);
     },
@@ -269,6 +316,9 @@ export default {
 </script>
 
 <style scoped>
+.user-edit {
+  margin-top: 20px;
+}
 .user-info-form {
   display: flex;
   width: 100%;
