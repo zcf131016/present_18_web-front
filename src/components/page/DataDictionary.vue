@@ -258,7 +258,7 @@
           <el-input v-model="DictDetailForm.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="编码" :label-width="formLabelWidth" prop="code">
-          <el-input v-model="DictDetailForm.code" autocomplete="off"></el-input>
+          <el-input v-model="DictDetailForm.code" autocomplete="off" readonly></el-input>
         </el-form-item>
         <el-form-item label="值" :label-width="formLabelWidth" prop="value">
           <el-input v-model="DictDetailForm.value" autocomplete="off"></el-input>
