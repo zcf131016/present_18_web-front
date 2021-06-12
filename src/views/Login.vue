@@ -365,9 +365,13 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
               _this.$router.replace({path: '/'});     // 跳转到首页
             } else {
               _this.$message(resp.data.msg)
+              localStorage.removeItem('access_token')
+              localStorage.removeItem('user_id')
             }
           } else {
             _this.$message(resp.data.msg)
+            localStorage.removeItem('access_token')
+            localStorage.removeItem('user_id')
           }
         });
       },
