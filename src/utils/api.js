@@ -10,14 +10,6 @@ export const postRequest = (url, params) => {
     method: 'post',
     url: `${url}`,
     data: params,
-    // transformRequest: [function (data) {
-    //   // 对接受到的数据进行转换
-    //   let ret = ''
-    //   for (let it in data) {
-    //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-    //   }
-    //   return ret
-    // }],
     headers: {
       'Content-Type': 'application/json'
     }
@@ -57,13 +49,13 @@ export const getRequest = (url,params) => {
   return service({
     method: 'get',
     params: params,
-    transformRequest: [function (data) {
-      let ret = ''
-      for (let it in data) {
-        ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-      }
-      return ret
-    }],
+    // transformRequest: [function (data) {
+    //   let ret = ''
+    //   for (let it in data) {
+    //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+    //   }
+    //   return ret
+    // }],
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },

@@ -18,6 +18,7 @@ service.interceptors.request.use(
             config.headers = {
             }
         }
+        // 刷新令牌
         if (config.url === 'refresh') {
             config.headers = {
                 'refresh-token': localStorage.getItem('refresh_token'),

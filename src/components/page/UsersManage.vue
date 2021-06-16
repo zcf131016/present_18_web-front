@@ -17,9 +17,9 @@
       <div style="margin-left: 20px">
         <el-input placeholder="请输入内容" v-model="search" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="用户ID" value="1"></el-option>
-            <el-option label="用户名" value="2"></el-option>
-            <el-option label="用户电话" value="3"></el-option>
+            <el-option label="用户ID" :value="1"></el-option>
+            <el-option label="用户名" :value="2"></el-option>
+            <el-option label="用户电话" :value="3"></el-option>
           </el-select>
           <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
@@ -203,7 +203,7 @@ export default {
     return {
       pageSize: 10,
       currentPage: 1,
-      select: '学号',
+      select: 1,
       tableData: [],
       total: 0,
       multipleSelection: [],
@@ -217,7 +217,7 @@ export default {
         email: '',
         phone: '',
         nickname: '',
-        roleId: null
+        roleId: 1
       },
       rules: {
         name: [{required: true, message: '请输入用户名', trigger: 'blur'}],
