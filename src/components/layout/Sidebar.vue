@@ -77,6 +77,7 @@ export default {
         if (resp.data.status == 200) {
           _this.items = resp.data.data
           _this.$store.commit('setMenus', _this.items)
+          console.log("菜单", resp.data.data)
           // console.log('menus form store: ', _this.$store.state.menus)
         }
       })

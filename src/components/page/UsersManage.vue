@@ -7,8 +7,9 @@
       <div class="buttons">
         <el-popconfirm
             title="确定删除这些条目吗？"
+            @confirm="deleteSelected()"
         >
-          <el-button slot="reference" @click="deleteSelected()" type="danger">批量删除</el-button>
+          <el-button slot="reference" type="danger">批量删除</el-button>
         </el-popconfirm>
       </div>
       <div class="buttons">
@@ -17,11 +18,11 @@
       <div style="margin-left: 20px">
         <el-input placeholder="请输入内容" v-model="search" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="用户ID" :value="1"></el-option>
-            <el-option label="用户名" :value="2"></el-option>
-            <el-option label="用户电话" :value="3"></el-option>
+            <el-option label="所有用户" :value="0"></el-option>
+            <el-option label="用户名" :value="1"></el-option>
+            <el-option label="用户角色ID" :value="2"></el-option>
           </el-select>
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch()"></el-button>
         </el-input>
       </div>
     </div>
@@ -203,7 +204,7 @@ export default {
     return {
       pageSize: 10,
       currentPage: 1,
-      select: 1,
+      select: 0,
       tableData: [],
       total: 0,
       multipleSelection: [],
@@ -227,12 +228,82 @@ export default {
     }
   },
   methods: {
+    handleSearch() {
+      let _this = this
+      if(this.select == 1) {
+        getRequest('/users/username/' + this.search, {
+          pageNum: _this.currentPage,
+          pageSize: _this.pageSize
+        }).then(resp => {
+          _this.tableData = resp.data.data.list
+          _this.total = resp.data.data.total
+          for(let i = 0;i < _this.tableData.length;i++) {
+            _this.tableData[i].phone = _this.tableData[i].phone == null ? '未绑定' : _this.tableData[i].phone
+            _this.tableData[i].email = _this.tableData[i].email == null ? '未绑定' : _this.tableData[i].email
+            _this.tableData[i].lastLoginTime = _this.tableData[i].lastLoginTime == null ? '无登录记录' : _this.tableData[i].lastLoginTime
+            let role_id = _this.tableData[i].roleId
+            switch (role_id) {
+              case 1:
+                _this.tableData[i].roleId = '管理员'
+                break
+              case 2:
+                _this.tableData[i].roleId = '教师'
+                break
+              case 3:
+                _this.tableData[i].roleId = '学生'
+                break
+            }
+          }
+          console.log('hello', resp.data.data)
+        })
+      } else if(this.select == 2) {
+        getRequest('/users/role/' + this.search, {
+          pageNum: _this.currentPage,
+          pageSize: _this.pageSize
+        }).then(resp => {
+          _this.tableData = resp.data.data.list
+          _this.total = resp.data.data.total
+          for(let i = 0;i < _this.tableData.length;i++) {
+            _this.tableData[i].phone = _this.tableData[i].phone == null ? '未绑定' : _this.tableData[i].phone
+            _this.tableData[i].email = _this.tableData[i].email == null ? '未绑定' : _this.tableData[i].email
+            _this.tableData[i].lastLoginTime = _this.tableData[i].lastLoginTime == null ? '无登录记录' : _this.tableData[i].lastLoginTime
+            let role_id = _this.tableData[i].roleId
+            switch (role_id) {
+              case 1:
+                _this.tableData[i].roleId = '管理员'
+                break
+              case 2:
+                _this.tableData[i].roleId = '教师'
+                break
+              case 3:
+                _this.tableData[i].roleId = '学生'
+                break
+            }
+          }
+          console.log('hello', resp.data.data)
+        })
+      } else {
+        _this.getUsers()
+      }
+    },
     prepare(row) {
       this.UserForm.id = row.id
       this.UserForm.username = row.username
       this.UserForm.email = row.email
       this.UserForm.phone = row.phone
-      this.UserForm.roleId = row.roleId
+      let roleId = 1
+      switch (row.roleId) {
+        case '管理员':
+          roleId = 1
+          break
+        case '教师':
+          roleId=2
+          break
+        case '学生':
+          roleId=3
+          break
+      }
+      this.UserForm.roleId = roleId
       this.dialogFormVisibleForEdit = true
       console.log(this.UserForm)
     },
@@ -244,6 +315,7 @@ export default {
           message: resp.data.msg
         })
       })
+      this.getUsers();
     },
     getUsers() {
       let _this = this
@@ -284,13 +356,28 @@ export default {
       }
     },
     deleteSelected() {
-
+      let selected = this.$refs.multipleTable.selection;
+      console.log(selected)
+      selected.forEach(row => {
+        deleteRequest("/users/" + row.id, {}).then(resp => {
+          this.$message({
+            type: 'success',
+            message: resp.data.msg
+          })
+        })
+      })
+      this.getUsers();
     },
     addUser () {
       // 添加用户
       this.dialogFormVisible = false
       let _this = this
-      postRequest('/users/admin', this.UserForm).then(resp => {
+      postRequest('/users/admin', {
+        username: this.UserForm.username,
+        phone: this.UserForm.phone,
+        email: this.UserForm.email,
+        roleId: this.UserForm.roleId
+      }).then(resp => {
         _this.$message({
           type: "success",
           message: resp.data.msg

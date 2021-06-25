@@ -113,11 +113,11 @@
               </div>
               <div class="info-item">
                 <label class="info-label">姓名</label>
-                <span title="">{{userInfo.realname}}</span>
+                <span title="">{{userInfo.username}}</span>
               </div>
               <div class="info-item">
                 <label class="info-label">昵称</label>
-                <span title="">{{userInfo.username}}</span>
+                <span title="">{{userInfo.nickname}}</span>
               </div>
               <div class="info-item">
                 <label class="info-label">性别</label>
@@ -312,8 +312,13 @@ export default {
       if (this.userInfo.avatar == null) {
         this.userInfo.avatar = 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
       }
-      if (this.userInfo.realname == null) {
-        this.userInfo.realname = '未命名'
+      if(this.userInfo.sex == 0) {
+        this.userInfo.sex = '男'
+      } else {
+        this.userInfo.sex = '女'
+      }
+      if (this.userInfo.nickname == null) {
+        this.userInfo.nickname = '未命名'
       }
       switch (this.userInfo.role) {
         case "ROLE_ADMIN":

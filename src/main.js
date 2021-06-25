@@ -5,8 +5,10 @@ import './plugins/element.js'
 import store from "./store";
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import iconPicker from 'vue-fontawesome-elementui-icon-picker';
 
 Vue.config.productionTip = false
+Vue.use(iconPicker);
 
 // 在进入每一个页面前执行判断权限
 router.beforeEach((to, from, next) => {

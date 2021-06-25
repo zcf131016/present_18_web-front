@@ -1,14 +1,15 @@
 <template>
   <div class="base-table">
-    <div style="margin-top: 20px;display: flex;margin-bottom: 20px">
+    <div style="width: 100%;height: 60px;padding: 0px;padding-left: 0;margin-top: 0;background: #FAFAFA;display: flex;margin-bottom: 20px;position: fixed;z-index: 2">
       <div class="buttons">
         <el-button @click="toggleSelection()" type="warning">取消选择</el-button>
       </div>
       <div class="buttons">
         <el-popconfirm
             title="确定删除这些条目吗？"
+            @confirm="deleteSelected()"
         >
-          <el-button slot="reference" @click="deleteSelected()" type="danger">批量删除</el-button>
+          <el-button slot="reference" type="danger">批量删除</el-button>
         </el-popconfirm>
       </div>
       <div class="buttons">
@@ -17,20 +18,20 @@
       <div style="margin-left: 20px">
         <el-input placeholder="请输入内容" v-model="search" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="用户ID" value="1"></el-option>
-            <el-option label="用户名" value="2"></el-option>
-            <el-option label="用户电话" value="3"></el-option>
+            <el-option label="所有学生" :value="0"></el-option>
+            <el-option label="学生用户名" :value="1"></el-option>
           </el-select>
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch()"></el-button>
         </el-input>
       </div>
     </div>
-    <el-divider></el-divider>
+    <el-divide></el-divide>
     <el-table
         ref="multipleTable"
+        max-height="800px"
         :data="tableData"
         tooltip-effect="dark"
-        style="width: 100%"
+        style="width: 100%;margin-top: 80px"
         @selection-change="handleSelectionChange">
       <el-table-column
           type="selection"
@@ -62,11 +63,27 @@
           prop="roleId"
           label="角色"
       >
+        <template slot-scope="scope">
+          <el-tag
+              :type="scope.row.roleId == '管理员' ? 'warning' : 'info'"
+              v-model="scope.row.roleId"
+          >
+            {{scope.row.roleId}}
+          </el-tag>
+        </template>
       </el-table-column>
       <el-table-column
           prop="enable"
           label="状态"
           show-overflow-tooltip>
+        <template slot-scope="scope">
+          <el-switch
+              @change="handleForbidden(scope.$index, scope.row)"
+              v-model="scope.row.enable"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+          </el-switch>
+        </template>
       </el-table-column>
       <el-table-column
           prop="lastLoginTime"
@@ -83,13 +100,15 @@
         <template slot-scope="scope">
           <el-popconfirm
               class="buttons"
-              @confirm="handleForbidden(scope.$index, scope.row)"
-              title="确定禁用该用户？"
+              @confirm="prepare(scope.row)"
+              title="确定要修改用户信息？"
           >
             <el-button
                 size="mini"
+                type="warning"
                 slot="reference"
-            >{{scope.row.enable ? '禁用' : '解禁'}}</el-button>
+                plain
+            >编辑</el-button>
           </el-popconfirm>
           <el-popconfirm
               class="buttons"
@@ -115,10 +134,11 @@
           :current-page.sync="currentPage"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
-          :total="this.tableData.length">
+          :total="this.total">
       </el-pagination>
     </div>
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+    <!--    添加用户-->
+    <el-dialog title="添加学生" :visible.sync="dialogFormVisible">
       <el-form :model="UserForm">
         <el-form-item label="用户名" label-width="120px">
           <el-input v-model="UserForm.username" autocomplete="off"></el-input>
@@ -131,9 +151,9 @@
         </el-form-item>
         <el-form-item label="角色" label-width="120px" style="float: left">
           <el-select v-model.number="UserForm.roleId" placeholder="请选择用户角色">
-            <el-option label="管理员" value="1"></el-option>
-            <el-option label="教师" value="2"></el-option>
-            <el-option label="学生" value="3"></el-option>
+            <el-option label="管理员" :value="1"></el-option>
+            <el-option label="教师" :value="2"></el-option>
+            <el-option label="学生" :value="3"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -142,44 +162,132 @@
         <el-button type="primary" @click="addUser">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!--    编辑用户-->
+    <el-dialog title="编辑学生信息" :visible.sync="dialogFormVisibleForEdit">
+      <el-form :model="UserForm" :rules="rules">
+        <el-form-item label="用户名" label-width="120px" prop="name">
+          <el-input v-model="UserForm.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="昵称" label-width="120px">
+          <el-input v-model="UserForm.nickname" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" label-width="120px" prop="phone">
+          <el-input v-model="UserForm.phone" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="120px" prop="email">
+          <el-input v-model="UserForm.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色" label-width="120px" style="float: left">
+          <el-select v-model.number="UserForm.roleId" placeholder="请选择用户角色">
+            <el-option label="管理员" :value="1"></el-option>
+            <el-option label="教师" :value="2"></el-option>
+            <el-option label="学生" :value="3"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleForEdit = false">取 消</el-button>
+        <el-button type="primary" @click="handleEdit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {deleteRequest, getRequest} from "@/utils/api";
+import {deleteRequest, getRequest, postRequest, putRequest} from "@/utils/api";
 
 export default {
-  name: "StudentManage",
+  name: "UsersManage",
   data() {
     return {
       pageSize: 10,
       currentPage: 1,
-      select: '学号',
+      select: 0,
       tableData: [],
       total: 0,
       multipleSelection: [],
+      currentUser: {},
       dialogFormVisible: false,
+      dialogFormVisibleForEdit: false,
       search: '',
       UserForm: {
+        id: 0,
         username: '',
         email: '',
         phone: '',
-        roleId: 2
+        nickname: '',
+        roleId: 1
+      },
+      rules: {
+        name: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        phone: [{required: true, message: '请输入手机号', trigger: 'blur'}],
+        email: [{required: true, message: '请输入用户邮箱', trigger: 'blur'}]
       }
     }
   },
   methods: {
+    handleSearch() {
+      let _this = this
+      if(this.select == 1) {
+        getRequest('/users/username/' + this.search, {
+          pageNum: _this.currentPage,
+          pageSize: _this.pageSize
+        }).then(resp => {
+          _this.tableData = resp.data.data.list.filter(item => {return item.roleId == 3})
+          _this.total = resp.data.data.total
+          for(let i = 0;i < _this.tableData.length;i++) {
+            _this.tableData[i].phone = _this.tableData[i].phone == null ? '未绑定' : _this.tableData[i].phone
+            _this.tableData[i].email = _this.tableData[i].email == null ? '未绑定' : _this.tableData[i].email
+            _this.tableData[i].lastLoginTime = _this.tableData[i].lastLoginTime == null ? '无登录记录' : _this.tableData[i].lastLoginTime
+            let role_id = _this.tableData[i].roleId
+            switch (role_id) {
+              case 1:
+                _this.tableData[i].roleId = '管理员'
+                break
+              case 2:
+                _this.tableData[i].roleId = '教师'
+                break
+              case 3:
+                _this.tableData[i].roleId = '学生'
+                break
+            }
+          }
+          console.log('hello', resp.data.data)
+        })
+      } else {
+        _this.getUsers()
+      }
+    },
+    prepare(row) {
+      this.UserForm.id = row.id
+      this.UserForm.username = row.username
+      this.UserForm.email = row.email
+      this.UserForm.phone = row.phone
+      this.UserForm.roleId = row.roleId
+      this.dialogFormVisibleForEdit = true
+      console.log(this.UserForm)
+    },
+    handleEdit() {
+      let _this = this
+      putRequest('/users',_this.UserForm).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+      })
+      this.getUsers();
+    },
     getUsers() {
       let _this = this
       _this.loading = true
       getRequest('/users',{
-        // pageNum: _this.currentPage,
-        // pageSize: _this.pageSize
+        pageNum: _this.currentPage,
+        pageSize: _this.pageSize
       }).then(resp => {
-        _this.tableData = resp.data.data.list.filter(function (item) {return item.roleId=='3'})
+        _this.tableData = resp.data.data.list.filter(item => {return item.roleId==3})
         _this.total = resp.data.data.total
         for(let i = 0;i < _this.tableData.length;i++) {
-          _this.tableData[i].enable = _this.tableData[i] ? '可用' : '禁用'
           _this.tableData[i].phone = _this.tableData[i].phone == null ? '未绑定' : _this.tableData[i].phone
           _this.tableData[i].email = _this.tableData[i].email == null ? '未绑定' : _this.tableData[i].email
           _this.tableData[i].lastLoginTime = _this.tableData[i].lastLoginTime == null ? '无登录记录' : _this.tableData[i].lastLoginTime
@@ -209,18 +317,44 @@ export default {
       }
     },
     deleteSelected() {
-
+      let selected = this.$refs.multipleTable.selection;
+      console.log(selected)
+      selected.forEach(row => {
+        deleteRequest("/users/" + row.id, {}).then(resp => {
+          this.$message({
+            type: 'success',
+            message: resp.data.msg
+          })
+        })
+      })
+      this.getUsers();
     },
     addUser () {
       // 添加用户
       this.dialogFormVisible = false
       let _this = this
+      postRequest('/users/admin', {
+        username: this.UserForm.username,
+        phone: this.UserForm.phone,
+        email: this.UserForm.email,
+        roleId: this.UserForm.roleId
+      }).then(resp => {
+        _this.$message({
+          type: "success",
+          message: resp.data.msg
+        })
+      })
     },
     handleForbidden(index, row) {
-
+      let _this = this
+      putRequest('/users/enable/' + row.id,{}).then(resp => {
+        _this.$message(resp.data.msg)
+        _this.getUsers()
+      })
     },
     handleDelete(index, row){
       let _this = this
+      console.log('准备删除')
       deleteRequest('/users/' + row.id, {}).then(resp => {
         if(resp.data.status == 200) {
           _this.$message(resp.data.msg)

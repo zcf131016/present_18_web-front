@@ -200,7 +200,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           phone: '',
           password: '',
           smsCode: '',
-          roleId: 1,
+          roleId: 2,
           sex: '男',
           schoolId: 1,
           collegeId: null
@@ -352,7 +352,6 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           phone: this.loginForm.phone,
           password: this.loginForm.password
         }).then(resp => {
-          _this.loading = false;
           if (resp.status == 200) { // 200 表示成功 300 表示重定向
             //成功
             let json = resp.data;
@@ -373,6 +372,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
             localStorage.removeItem('access_token')
             localStorage.removeItem('user_id')
           }
+          _this.loading = false;
         });
       },
       getMsgCode(phone) {
