@@ -200,7 +200,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           phone: '',
           password: '',
           smsCode: '',
-          roleId: 1,
+          roleId: 2,
           sex: '男',
           schoolId: 1,
           collegeId: null
@@ -282,10 +282,10 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           code: this.registerForm.smsCode,
           password: this.registerForm.password,
           phone: this.registerForm.phone,
-          // "roleId": this.registerForm.roleId,
-          "schoolId": this.registerForm.schoolId,
+          roleId: 2,
+          schoolId: this.registerForm.schoolId,
           // "sex": this.registerForm.sex,
-          "collegeId": this.registerForm.collegeId,
+          collegeId: this.registerForm.collegeId,
           // "number": this.registerForm.number
         }).then(resp => {
           _this.loading = false;
@@ -352,7 +352,6 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
           phone: this.loginForm.phone,
           password: this.loginForm.password
         }).then(resp => {
-          _this.loading = false;
           if (resp.status == 200) { // 200 表示成功 300 表示重定向
             //成功
             let json = resp.data;
@@ -373,6 +372,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
             localStorage.removeItem('access_token')
             localStorage.removeItem('user_id')
           }
+          _this.loading = false;
         });
       },
       getMsgCode(phone) {
@@ -457,7 +457,7 @@ import {postRequest, getRequest, putRequest} from '../utils/api'
 </script>
 <style>
 #paper {
-  background:url("../assets/sea.jpeg") no-repeat;
+  background:url("../assets/sky.jpg") no-repeat;
   background-position: center;
   height: 100%;
   width: 100%;
@@ -470,13 +470,11 @@ body {
 }
 
 .login-container {
-    float: right;
-    margin-top: 60px;
-    height: 80vh;
     border-radius: 15px;
     background-clip: padding-box;
-    margin-right: 60px;
     width: 350px;
+    margin: 0 auto;
+    margin-top: 180px;
     padding: 60px 35px 15px 35px;
     background-color: rgba(255,255,255,0.8);
   }

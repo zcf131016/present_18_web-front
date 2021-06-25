@@ -54,6 +54,12 @@
       </el-table-column>
 
       <el-table-column
+          prop="title"
+          label="显示名称"
+      >
+      </el-table-column>
+
+      <el-table-column
           prop="icon"
           label="图标"
       >
@@ -78,6 +84,7 @@
         <template slot-scope="scope">
           <el-switch
               v-model="scope.row.hidden"
+              @change="changeStatus(scope.row)"
               active-color="#ff4949"
               inactive-color="#13ce66">
           </el-switch>
@@ -87,13 +94,13 @@
         <template slot-scope="scope">
           <el-popconfirm
               class="buttons"
-              @confirm="handleForbidden(scope.$index, scope.row)"
-              title="确定禁用该菜单？"
+              @confirm="MenuForm = scope.row;dialogFormVisibleForEdit=true"
+              title="确定编辑该菜单？"
           >
             <el-button
                 size="mini"
                 slot="reference"
-            >{{scope.row.enable ? '禁用' : '解禁'}}</el-button>
+            >编辑</el-button>
           </el-popconfirm>
           <el-popconfirm
               class="buttons"
@@ -102,7 +109,7 @@
               cancelButtonText='不用了'
               icon="el-icon-info"
               iconColor="red"
-              title="确定删除该用户？"
+              title="确定删除该菜单？"
           >
             <el-button
                 size="mini"
@@ -113,44 +120,77 @@
       </el-table-column>
     </el-table>
     <div class="block">
-      <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-size="pageSize"
-          layout="total, prev, pager, next, jumper"
-          :total="this.total">
-      </el-pagination>
+<!--      <el-pagination-->
+<!--          @size-change="handleSizeChange"-->
+<!--          @current-change="handleCurrentChange"-->
+<!--          :current-page.sync="currentPage"-->
+<!--          :page-size="pageSize"-->
+<!--          layout="total, prev, pager, next, jumper"-->
+<!--          :total="this.total">-->
+<!--      </el-pagination>-->
     </div>
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+    <el-dialog title="添加菜单" :visible.sync="dialogFormVisible">
       <el-form :model="MenuForm">
-        <el-form-item label="用户名" label-width="120px">
-          <el-input v-model="MenuForm.username" autocomplete="off"></el-input>
+        <el-form-item label="菜单名" label-width="120px">
+          <el-input v-model="MenuForm.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="手机号" label-width="120px">
-          <el-input v-model="MenuForm.phone" autocomplete="off"></el-input>
+        <el-form-item label="显示名称" label-width="120px">
+          <el-input v-model="MenuForm.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱" label-width="120px">
-          <el-input v-model="MenuForm.email" autocomplete="off"></el-input>
+        <el-form-item label="父菜单ID" label-width="120px">
+          <el-input v-model="MenuForm.parentId" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="角色" label-width="120px" style="float: left">
-          <el-select v-model.number="MenuForm.roleId" placeholder="请选择用户角色">
-            <el-option label="管理员" value="1"></el-option>
-            <el-option label="教师" value="2"></el-option>
-            <el-option label="学生" value="3"></el-option>
-          </el-select>
+        <el-form-item label="图标" label-width="120px">
+          <template>
+            <icon-picker v-model="MenuForm.icon"></icon-picker>
+          </template>
+        </el-form-item>
+        <el-form-item label="路径" label-width="120px">
+          <el-input v-model="MenuForm.path" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="组件" label-width="120px" style="float: left">
+          <el-input v-model="MenuForm.component" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUser">确 定</el-button>
+        <el-button type="primary" @click="addMenu">确 定</el-button>
+      </div>
+    </el-dialog>
+<!--    编辑菜单-->
+    <el-dialog title="编辑菜单" :visible.sync="dialogFormVisibleForEdit">
+      <el-form :model="MenuForm">
+        <el-form-item label="菜单名" label-width="120px">
+          <el-input v-model="MenuForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="显示名称" label-width="120px">
+          <el-input v-model="MenuForm.title" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="父菜单ID" label-width="120px">
+          <el-input v-model="MenuForm.parentId" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="图标" label-width="120px">
+          <template>
+            <icon-picker v-model="MenuForm.icon"></icon-picker>
+          </template>
+        </el-form-item>
+        <el-form-item label="路径" label-width="120px">
+          <el-input v-model="MenuForm.path" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="组件" label-width="120px" style="float: left">
+          <el-input v-model="MenuForm.component" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleForEdit = false">取 消</el-button>
+        <el-button type="primary" @click="handleEdit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {deleteRequest, getRequest} from "@/utils/api";
+import {deleteRequest, getRequest, postRequest, putRequest} from "@/utils/api";
 
 export default {
   name: "MenuManage",
@@ -163,20 +203,54 @@ export default {
       total: 0,
       multipleSelection: [],
       dialogFormVisible: false,
+      dialogFormVisibleForEdit: false,
       search: '',
       MenuForm: {
-        username: '',
-        email: '',
-        phone: '',
-        roleId: 2
+        component: "",
+        hidden: true,
+        icon: "",
+        id: 0,
+        name: "",
+        parentId: 0,
+        path: "",
+        title: ""
       }
     }
   },
   methods: {
+    addMenu(){
+      let _this = this
+      postRequest('/menus', {
+        component: _this.MenuForm.component,
+        icon: _this.MenuForm.icon,
+        name: _this.MenuForm.name,
+        parentId: _this.MenuForm.parentId,
+        path: _this.MenuForm.path,
+        title: _this.MenuForm.title
+      }).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+        _this.getMenus()
+      })
+    },
+    changeStatus(row) {
+      let _this = this
+      putRequest('/menus',{
+        id: row.id,
+        hidden: row.hidden
+      }).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+      })
+    },
     getMenus() {
       let _this = this
       _this.loading = true
-      getRequest('/menus/role/' + 1).then(resp => {
+      getRequest('/menus/').then(resp => {
         _this.tableData = resp.data.data
         _this.total = resp.data.data.total
         console.log('hello', resp.data.data)
@@ -199,12 +273,26 @@ export default {
       this.dialogFormVisible = false
       let _this = this
     },
-    handleForbidden(index, row) {
-
+    handleEdit(index, row) {
+      let _this = this
+      putRequest('/menus', {
+        id: _this.MenuForm.id,
+        name: _this.MenuForm.name,
+        path: _this.MenuForm.path,
+        component: _this.MenuForm.component,
+        parentId: _this.MenuForm.parentId,
+        icon: _this.MenuForm.icon,
+        title: _this.MenuForm.title
+      }).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+      })
     },
     handleDelete(index, row){
       let _this = this
-      deleteRequest('/users/' + row.id, {}).then(resp => {
+      deleteRequest('/menus/' + row.id, {}).then(resp => {
         if(resp.data.status == 200) {
           _this.$message(resp.data.msg)
           _this.getMenus()

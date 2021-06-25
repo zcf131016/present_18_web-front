@@ -13,7 +13,7 @@
         </el-popconfirm>
       </div>
       <div class="buttons">
-        <el-button @click="addItem" type="primary">添加</el-button>
+        <el-button @click="dialogFormVisibleForAdd = true" type="primary">添加</el-button>
       </div>
       <div style="margin-left: 20px">
         <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
@@ -53,17 +53,17 @@
                   size="mini"
                   class="op-button"
                   icon="el-icon-edit"
-                  @click="handleEdit(scope.$index, scope.row)"></el-button>
+                  @click="dialogFormVisibleForEdit = true;RoleForm.id=scope.row.id;RoleForm.name=scope.row.name;RoleForm.remark=scope.row.remark"></el-button>
               <el-popconfirm
                 title="确定删除这个条目吗？"
+                @confirm="handleDelete(scope.$index, scope.row)"
               >
                 <el-button
                     class="op-button"
                     slot="reference"
                     size="mini"
                     icon="el-icon-delete"
-                    type="danger"
-                    @click="handleDelete(scope.$index, scope.row)"></el-button>
+                    type="danger"></el-button>
               </el-popconfirm>
 
             </template>
@@ -114,49 +114,51 @@
     </el-col>
   </el-row>
     <!-- 编辑角色-->
-    <el-dialog title="编辑角色" :visible.sync="dialogFormVisible" width="700px">
+    <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleForEdit" width="700px">
       <el-form :model="RoleForm">
         <el-form-item label="角色名称" :label-width="formLabelWidth">
           <el-input v-model="RoleForm.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-row :gutter="24">
-          <el-col :span="10">
-            <el-form-item label="角色级别" prop="level" :label-width="formLabelWidth">
-              <el-input-number v-model.number="RoleForm.level" :min="1" controls-position="right" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="数据范围" prop="dataScope" :label-width="formLabelWidth">
-              <el-select v-model="RoleForm.dataScope" placeholder="请选择数据范围">
-                <el-option
-                    v-for="item in dateScopes"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
         <el-form-item label="角色描述" :label-width="formLabelWidth">
           <el-input
               type="textarea"
               :rows="5"
               placeholder="请输入内容"
-              v-model="RoleForm.description">
+              v-model="RoleForm.remark">
           </el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="dialogFormVisibleForEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editRole()">确 定</el-button>
       </div>
     </el-dialog>
+<!--    添加角色-->
+    <el-dialog title="添加角色" :visible.sync="dialogFormVisibleForAdd" width="700px">
+      <el-form :model="RoleForm">
+        <el-form-item label="角色名称" :label-width="formLabelWidth">
+          <el-input v-model="RoleForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" :label-width="formLabelWidth">
+          <el-input
+              type="textarea"
+              :rows="5"
+              placeholder="请输入内容"
+              v-model="RoleForm.remark">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleForAdd = false">取 消</el-button>
+        <el-button type="primary" @click="addRole()">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import {getRequest, postRequest} from "@/utils/api";
+import {deleteRequest, getRequest, postRequest, putRequest} from "@/utils/api";
 
 export default {
   name: "RoleManage",
@@ -166,6 +168,8 @@ export default {
       currentPage: 1,
       multipleSelection: [],
       AssignedMenu: [],
+      dialogFormVisibleForEdit: false,
+      dialogFormVisibleForAdd: false,
       currentRoleId: 0,
       query: '',
       select: '',
@@ -185,10 +189,9 @@ export default {
           '自定义'
       ],
       RoleForm: {
+        id: 1,
         name: '',
-        dataScope: '',
-        level: '',
-        description: '-'
+        remark: '-'
       },
       TableData: [],
       menus: [],
@@ -198,6 +201,33 @@ export default {
     }
   },
   methods: {
+    addRole() {
+      let _this = this
+      postRequest('/roles', {
+        name: _this.RoleForm.name,
+        description: _this.RoleForm.remark
+      }).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+        _this.getAllRole()
+      })
+    },
+    editRole() {
+      let _this = this
+      putRequest('/roles', {
+        id: _this.RoleForm.id,
+        name: _this.RoleForm.name,
+        description: _this.RoleForm.remark
+      }).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+        _this.getAllRole()
+      })
+    },
     getRoleMenu(val) {
       let _this = this
       _this.loading = true
@@ -260,13 +290,26 @@ export default {
       })
     },
     getMenu: function () {
-      this.menus = this.$store.state.menus
+      let _this = this
+      // this.menus = this.$store.state.menus
+      getRequest('/menus',{}).then(resp => {
+        _this.menus = resp.data.data
+      })
     },
     handleEdit: function (index, row){
       this.dialogFormVisible = true
       this.RoleForm.name = row.name
     },
-    handleDelete: function (){},
+    handleDelete: function (index, row){
+      let _this = this
+      deleteRequest('/roles/' + row.id, {}).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: resp.data.msg
+        })
+        _this.getAllRole()
+      })
+    },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },

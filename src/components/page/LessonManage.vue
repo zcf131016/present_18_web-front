@@ -18,9 +18,8 @@
         <el-input placeholder="请输入内容" v-model="search" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="班课号" :value="1"></el-option>
-            <el-option label="班课名" :value="2"></el-option>
           </el-select>
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch()"></el-button>
         </el-input>
       </div>
     </div>
@@ -65,7 +64,7 @@
 
       <el-table-column
           prop="teacherId"
-          label="任课教师ID"
+          label="任课教师"
       >
       </el-table-column>
       <el-table-column
@@ -84,6 +83,10 @@
 
       <el-table-column label="操作"  fixed="right" width="300px">
         <template slot-scope="scope">
+          <el-button
+              size="mini"
+              type="warning"
+              @click="dialogFormVisibleForEdit = true;ClassForm.name=scope.row.name;ClassForm.semester=scope.row.semester;ClassForm.classroom=scope.row.classroom;ClassForm.id=scope.row.id">编辑班课</el-button>
           <el-button
               size="mini"
               type="success"
@@ -138,6 +141,7 @@
           :total="this.total">
       </el-pagination>
     </div>
+<!--    添加班课-->
     <el-dialog title="添加班课" :visible.sync="dialogFormVisible">
       <el-form :model="ClassForm">
         <el-form-item label="班课名" label-width="120px">
@@ -153,6 +157,24 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="addCourses">确 定</el-button>
+      </div>
+    </el-dialog>
+<!--    编辑班课信息-->
+    <el-dialog title="编辑班课信息" :visible.sync="dialogFormVisibleForEdit">
+      <el-form :model="ClassForm">
+        <el-form-item label="班课名" label-width="120px">
+          <el-input v-model="ClassForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="教室" label-width="120px">
+          <el-input v-model="ClassForm.classroom" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="学期" label-width="120px">
+          <el-input v-model="ClassForm.semester" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleForEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editCourses">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -173,12 +195,15 @@ export default {
       total: 0,
       multipleSelection: [],
       dialogFormVisible: false,
+      dialogFormVisibleForEdit: false,
       showMembers: false,
       search: '',
       ClassForm: {
+        id: 0,
         name: '',
         semester: '',
-        classroom: ''
+        classroom: '',
+        teacherId: 0
       },
       student: {
         username: '',
@@ -187,6 +212,32 @@ export default {
     }
   },
   methods: {
+    handleSearch() {
+      let _this = this
+      getRequest('/courses/number/' + _this.search, {}).then(resp => {
+        _this.$message({
+          type: 'success',
+          message: "查询成功"
+        })
+        _this.tableData = []
+        _this.tableData.push(resp.data.data)
+      })
+    },
+    editCourses() {
+      let _this = this
+      putRequest('courses', {
+        id: _this.ClassForm.id,
+        name: _this.ClassForm.name,
+        semester: _this.ClassForm.semester,
+        classroom: _this.ClassForm.classroom
+      }).then(resp => {
+        _this.$message({
+          type: 'normal',
+          message: resp.data.msg
+        })
+        this.getAllCourses()
+      })
+    },
     getAllCourses() {
       let _this = this
       getRequest('/courses',{
@@ -194,6 +245,11 @@ export default {
         pageSize: _this.pageSize
       }).then(resp => {
         _this.tableData = resp.data.data
+        for(let i = 0;i < _this.tableData.length;i++) {
+          getRequest('/users/' + _this.tableData[i].teacherId, {}).then(resp => {
+            _this.tableData[i].teacherId = resp.data.data.nickname
+          })
+        }
       })
     },
     getCourses() {
