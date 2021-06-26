@@ -23,6 +23,8 @@
 
 <script>
 
+import {postRequest} from "@/utils/api";
+
 export default {
   name: "ManageBoard",
   components: {
@@ -57,6 +59,17 @@ export default {
           github: 'https://github.com/YHCClin'
         }
       ]
+    }
+  },
+  methods: {
+    test() {
+      postRequest('/dict/insertDictionary', {
+        typeName: 'sdfsdf',
+        typeCode: 'sdfsdfsdf',
+        dictionaryDetails: 'sdfsdfsdf'
+      }).then(resp => {
+        this.$message(resp.data.msg)
+      })
     }
   },
   created() {

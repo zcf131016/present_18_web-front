@@ -122,7 +122,7 @@
         <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
           <el-input v-model="SysParamForm.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="键" :label-width="formLabelWidth" prop="key">
+        <el-form-item label="键" :label-width="formLabelWidth">
           <el-input v-model="SysParamForm.key" autocomplete="off" readonly></el-input>
         </el-form-item>
         <el-form-item label="值" :label-width="formLabelWidth" prop="value">
@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import {deleteRequest, getRequest, postRequest} from "@/utils/api";
+import {deleteRequest, getRequest, postRequest, putRequest} from "@/utils/api";
 
 export default {
   name: "SysParaManage",
@@ -264,6 +264,9 @@ export default {
     },
     handleEdit(index, row){
       let _this = this
+      putRequest('/dict/data', this.SysParamForm).then(resp => {
+        _this.$message(resp.data.msg)
+      })
     },
     handleDelete(index, row){
       let _this = this
